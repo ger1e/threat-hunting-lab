@@ -73,3 +73,7 @@ TUNING / COVERAGE / GAP RECORD
 ## Safety boundary
 
 This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, or material that cannot be safely made public.
+
+## License
+
+MIT. See [`LICENSE`](LICENSE). The license covers the public example material in this repository; third-party names, trademarks, and linked intelligence sources remain the property of their respective owners.
