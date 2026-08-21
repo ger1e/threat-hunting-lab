@@ -1,19 +1,75 @@
-# Threat hunting lab
+# THREAT HUNTING LAB
 
-Sanitized, vendor-practical examples of how I structure hunts and CTI-oriented detection work. No customer data, private architecture, production identifiers, or proprietary incident material is included.
+`GER1E // PUBLIC SIGNAL SET`
 
-## Contents
+Sanitized, vendor-practical examples of how I structure threat hunts and CTI-oriented detection work. No customer data, private architecture, production identifiers, credentials, or proprietary incident material belongs here.
 
-- `hunts/suspicious-powershell-encoded-command.kql` — suspicious encoded/obfuscated PowerShell execution.
-- `hunts/device-code-follow-on.kql` — device-code authentication followed by unusual activity.
-- `hunts/rare-outbound-beaconing.kql` — low-volume periodic outbound network behavior.
-- `cti-schema.json` — compact normalization schema for API-driven threat-intelligence enrichment.
+```text
+STATUS      PUBLIC / SANITIZED
+MODEL       HYPOTHESIS → TELEMETRY → QUERY → EVIDENCE → TUNING
+PLATFORM    MICROSOFT DEFENDER XDR / SENTINEL
+LANGUAGE    KQL
+PRIORITY    BEHAVIOR > IOC CHURN
+```
+
+## Hunt set
+
+| Hunt | Signal | Primary telemetry |
+| --- | --- | --- |
+| [`device-code-follow-on.kql`](hunts/device-code-follow-on.kql) | OAuth device-code authentication requiring contextual investigation | `AADSignInEventsBeta` |
+| [`rare-outbound-beaconing.kql`](hunts/rare-outbound-beaconing.kql) | low-volume periodic outbound behavior | `DeviceNetworkEvents` |
+| [`suspicious-powershell-encoded-command.kql`](hunts/suspicious-powershell-encoded-command.kql) | encoded / obfuscated PowerShell execution | `DeviceProcessEvents` |
+
+## CTI normalization
+
+[`cti-schema.json`](cti-schema.json) is a compact normalization contract for API-driven enrichment. It separates source/provenance, observable value/type, actor or campaign context, confidence, temporal fields, and ingestion metadata so enrichment does not erase where evidence came from.
+
+## Hunt contract
+
+Every hunt should answer these before the first operator runs:
+
+1. What falsifiable behavior is being tested?
+2. Which telemetry must exist for the query to mean anything?
+3. What ATT&CK behavior is relevant, and what is merely adjacent?
+4. What should an analyst inspect in the returned rows?
+5. Which legitimate behaviors are expected to collide with the signal?
+6. How should the query be tuned without deleting the behavior being hunted?
+
+Each `.kql` file carries a standard header:
+
+- `Title`
+- `Description`
+- `Suspicious Behavior`
+- `MITRE ATT&CK`
+- `Pyramid of Pain`
+- `Kill Chain`
+- `Relevant CTI`
+
+CI rejects hunts that drop this context. A query without telemetry assumptions and investigation context is just decorative syntax.
 
 ## Method
 
-1. State a falsifiable hypothesis.
-2. Name the telemetry required before writing the query.
-3. Aggregate early and project only investigation-useful fields.
-4. Separate observed evidence from inference.
-5. Record ATT&CK mapping, expected false positives, and tuning guidance.
-6. Treat IOC matches as leads; behavior and context decide priority.
+```text
+HYPOTHESIS
+   ↓
+TELEMETRY READINESS
+   ↓
+CHEAP FILTERS / EARLY AGGREGATION
+   ↓
+INVESTIGATION-USEFUL OUTPUT
+   ↓
+FALSE-POSITIVE ANALYSIS
+   ↓
+TUNING / COVERAGE / GAP RECORD
+```
+
+- State a falsifiable hypothesis.
+- Name the telemetry required before writing the query.
+- Aggregate early and project only investigation-useful fields.
+- Separate observed evidence from inference.
+- Record ATT&CK mapping, expected false positives, and tuning guidance.
+- Treat IOC matches as leads; behavior and context decide priority.
+
+## Safety boundary
+
+This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, or material that cannot be safely made public.
