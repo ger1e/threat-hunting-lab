@@ -1,0 +1,74 @@
+name: hunt-contract
+
+on:
+  pull_request:
+    paths:
+      - 'hunts/**/*.kql'
+      - '.github/workflows/hunt-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'hunts/**/*.kql'
+      - '.github/workflows/hunt-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate KQL hunt contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob globstar
+
+          files=(hunts/**/*.kql)
+          if (( ${#files[@]} == 0 )); then
+            echo 'No KQL hunts found.' >&2
+            exit 1
+          fi
+
+          required=(
+            '// Title:'
+            '// Description:'
+            '// Suspicious Behavior:'
+            '// MITRE ATT&CK:'
+            '// Pyramid of Pain:'
+            '// Kill Chain:'
+            '// Relevant CTI:'
+          )
+
+          failed=0
+          for file in "${files[@]}"; do
+            echo "checking $file"
+
+            size=$(wc -c < "$file")
+            if (( size > 65536 )); then
+              echo "::error file=$file::Hunt exceeds 64 KiB ($size bytes)."
+              failed=1
+            fi
+
+            for header in "${required[@]}"; do
+              if ! grep -Fq "$header" "$file"; then
+                echo "::error file=$file::Missing required header: $header"
+                failed=1
+              fi
+            done
+
+            if ! grep -Eq '^// Relevant CTI:.*https://' "$file"; then
+              echo "::error file=$file::Relevant CTI must include at least one HTTPS source."
+              failed=1
+            fi
+          done
+
+          if (( failed != 0 )); then
+            exit 1
+          fi
+
+          echo "Hunt contract: PASS (${#files[@]} files)"
