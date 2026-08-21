@@ -1,0 +1,14 @@
+// Title: Device-code sign-in followed by unusual endpoint activity
+// Description: Surfaces device-code authentication and summarizes successful sign-ins for investigation.
+// Suspicious Behavior: OAuth device-code authentication from unusual IP/location or administrative identities.
+// MITRE ATT&CK: T1528 Steal Application Access Token; T1078 Valid Accounts
+// Pyramid of Pain: TTPs
+// Kill Chain: Initial Access / Credential Access
+// Relevant CTI: https://attack.mitre.org/techniques/T1528/ ; https://attack.mitre.org/techniques/T1078/
+let Lookback = 30d;
+AADSignInEventsBeta
+| where Timestamp >= ago(Lookback)
+| where AuthenticationProtocol =~ "deviceCode"
+| summarize FirstSeen=min(Timestamp), LastSeen=max(Timestamp), Attempts=count(), IPs=make_set(IPAddress, 10), Apps=make_set(Application, 10), Countries=make_set(Country, 10) by AccountUpn, AccountObjectId
+| where Attempts > 0
+| order by LastSeen desc

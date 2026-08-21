@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Normalized CTI observation",
+  "type": "object",
+  "required": ["source", "ingested_at", "confidence"],
+  "properties": {
+    "source": {"type": "string"},
+    "source_url": {"type": ["string", "null"], "format": "uri"},
+    "first_seen": {"type": ["string", "null"], "format": "date-time"},
+    "last_seen": {"type": ["string", "null"], "format": "date-time"},
+    "ingested_at": {"type": "string", "format": "date-time"},
+    "actor": {"type": ["string", "null"]},
+    "campaign": {"type": ["string", "null"]},
+    "victim": {"type": ["string", "null"]},
+    "sector": {"type": ["string", "null"]},
+    "geography": {"type": ["string", "null"]},
+    "ioc": {"type": ["object", "null"], "properties": {"type": {"enum": ["ip", "domain", "url", "sha256", "sha1", "md5", "email", "other"]}, "value": {"type": "string"}}, "required": ["type", "value"], "additionalProperties": false},
+    "context": {"type": ["string", "null"]},
+    "confidence": {"type": "integer", "minimum": 0, "maximum": 100}
+  },
+  "additionalProperties": false
+}

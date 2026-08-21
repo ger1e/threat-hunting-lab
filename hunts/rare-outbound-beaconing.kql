@@ -1,0 +1,18 @@
+// Title: Rare periodic outbound endpoint connections
+// Description: Aggregates low-volume external destinations into fixed time buckets to expose repeated beacon-like cadence.
+// Suspicious Behavior: Repeated external connections over many time buckets with low event volume per bucket.
+// MITRE ATT&CK: T1071 Application Layer Protocol
+// Pyramid of Pain: Network Artifacts / TTPs
+// Kill Chain: Command and Control
+// Relevant CTI: https://attack.mitre.org/techniques/T1071/
+let Lookback = 14d;
+let Bucket = 30m;
+DeviceNetworkEvents
+| where Timestamp >= ago(Lookback)
+| where ActionType == "ConnectionSuccess"
+| where isnotempty(RemoteIP)
+| summarize Events=count(), Buckets=dcount(bin(Timestamp, Bucket)), FirstSeen=min(Timestamp), LastSeen=max(Timestamp) by DeviceName, InitiatingProcessFileName, RemoteIP, RemotePort
+| where Buckets >= 8 and Events <= Buckets * 4
+| extend SpanHours=datetime_diff('hour', LastSeen, FirstSeen)
+| where SpanHours >= 4
+| order by Buckets desc, Events asc

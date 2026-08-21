@@ -1,0 +1,15 @@
+// Title: Suspicious PowerShell encoded or obfuscated command execution
+// Description: Finds PowerShell command lines with common encoded/obfuscation switches and summarizes by device/account.
+// Suspicious Behavior: EncodedCommand, shortened encoded switches, hidden/no-profile combinations.
+// MITRE ATT&CK: T1059.001 PowerShell; T1027 Obfuscated/Compressed Files and Information
+// Pyramid of Pain: Tools / TTPs
+// Kill Chain: Execution
+// Relevant CTI: https://attack.mitre.org/techniques/T1059/001/ ; https://attack.mitre.org/techniques/T1027/
+let Lookback = 30d;
+DeviceProcessEvents
+| where Timestamp >= ago(Lookback)
+| where FileName in~ ("powershell.exe", "pwsh.exe")
+| where ProcessCommandLine matches regex @"(?i)(^|\s)-(e|en|enc|enco|encod|encode|encodedcommand)(\s|:|$)"
+   or ProcessCommandLine has_any ("FromBase64String", "-WindowStyle Hidden", "-w hidden")
+| summarize FirstSeen=min(Timestamp), LastSeen=max(Timestamp), Executions=count(), Commands=make_set(ProcessCommandLine, 5) by DeviceName, AccountName, InitiatingProcessFileName
+| order by Executions desc
