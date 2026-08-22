@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Sensitive disclosure
+    url: https://github.com/ger1e/threat-hunting-lab/security
+    about: Do not place credentials, customer data, private infrastructure, or unpublished incident evidence in a public issue.
