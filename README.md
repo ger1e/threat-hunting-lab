@@ -6,6 +6,8 @@
 
 `GER1E // PUBLIC SIGNAL SET`
 
+[`PROFILE`](https://github.com/ger1e) · [`WEBSITE`](https://gergoilly.hu/) · [`HUNTING METHODOLOGY`](docs/HUNTING-METHODOLOGY.md) · [`CTI NORMALIZATION`](docs/CTI-NORMALIZATION.md)
+
 A sanitized public implementation of how I structure threat hunting, CTI translation, telemetry-readiness checks, evidence handling, and detection-oriented investigation. The repository demonstrates method and engineering discipline; the included KQL files are examples, not a ranked list of real-world hunting priorities.
 
 ```text
