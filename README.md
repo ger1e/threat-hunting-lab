@@ -16,6 +16,10 @@ LANGUAGE    KQL
 PRIORITY    BEHAVIOR + CONTEXT + EVIDENCE
 ```
 
+<p align="center">
+  <img src="assets/hunt-matrix.svg" alt="Cobalt hunt matrix mapping three public hunts to telemetry and analyst value" width="100%">
+</p>
+
 ## Hunt set
 
 | Hunt | Signal | Primary telemetry |
@@ -39,17 +43,9 @@ Every hunt should answer these before the first operator runs:
 5. Which legitimate behaviors are expected to collide with the signal?
 6. How should the query be tuned without deleting the behavior being hunted?
 
-Each `.kql` file carries a standard header:
+Each `.kql` file carries a standard header: `Title` · `Description` · `Suspicious Behavior` · `MITRE ATT&CK` · `Pyramid of Pain` · `Kill Chain` · `Relevant CTI`.
 
-- `Title`
-- `Description`
-- `Suspicious Behavior`
-- `MITRE ATT&CK`
-- `Pyramid of Pain`
-- `Kill Chain`
-- `Relevant CTI`
-
-CI rejects hunts that drop this context. A query without telemetry assumptions and investigation context is just decorative syntax.
+CI rejects hunts that drop this context. A query without telemetry assumptions and investigation context is decorative syntax.
 
 ## Method
 
