@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/lab-signal.svg" alt="GER1E threat hunting lab — hypothesis to tuned evidence" width="100%">
+</p>
+
 # THREAT HUNTING LAB
 
 `GER1E // PUBLIC SIGNAL SET`
