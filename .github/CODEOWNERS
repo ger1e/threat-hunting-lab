@@ -1,0 +1,14 @@
+# Public threat-hunting portfolio ownership
+* @ger1e
+
+# Hunting content
+/hunts/ @ger1e
+
+# Methodology and CTI contracts
+/docs/ @ger1e
+/cti-schema.json @ger1e
+
+# Repository policy and automation
+/.github/ @ger1e
+/SECURITY.md @ger1e
+/CONTRIBUTING.md @ger1e
