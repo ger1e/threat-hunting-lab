@@ -1,0 +1,36 @@
+name: Documentation / mapping correction
+description: Report a public documentation, source-provenance, ATT&CK mapping, or schema problem
+title: "[docs] "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for public, sanitized corrections. Do not include customer data, credentials, private infrastructure, or unpublished incident evidence.
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: File, section, hunt, or schema field affected.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Correction
+      description: What should change and why?
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: Prefer original vendor, government, academic, ATT&CK, or technical sources.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Public-safety check
+      options:
+        - label: This report contains no customer data, credentials, private infrastructure, or unpublished incident evidence.
+          required: true
