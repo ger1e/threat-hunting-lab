@@ -70,6 +70,10 @@ TUNING / COVERAGE / GAP RECORD
 - Record ATT&CK mapping, expected false positives, and tuning guidance.
 - Treat IOC matches as leads; behavior and context decide priority.
 
+## Contribution standard
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Pull requests use a hunt-focused template that forces telemetry assumptions, analyst value, ATT&CK scope, false-positive analysis, provenance, and a public-safety check into the review path.
+
 ## Safety boundary
 
 This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, or material that cannot be safely made public.
