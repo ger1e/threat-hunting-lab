@@ -6,7 +6,7 @@
 
 `GER1E // PUBLIC SIGNAL SET`
 
-Sanitized, vendor-practical examples of how I structure threat hunts and CTI-oriented detection work. No customer data, private architecture, production identifiers, credentials, or proprietary incident material belongs here.
+A sanitized public implementation of how I structure threat hunting, CTI translation, telemetry-readiness checks, evidence handling, and detection-oriented investigation. The repository demonstrates method and engineering discipline; the included KQL files are examples, not a ranked list of real-world hunting priorities.
 
 ```text
 STATUS      PUBLIC / SANITIZED
@@ -16,23 +16,31 @@ LANGUAGE    KQL
 PRIORITY    BEHAVIOR + CONTEXT + EVIDENCE
 ```
 
-## Hunt set
+## Operating model
 
-The queries in this repository are public examples of the methodology, not a ranked or representative list of real-world hunting priorities.
+[`Hunting methodology`](docs/HUNTING-METHODOLOGY.md) defines the complete lifecycle from intake and falsifiable hypothesis through telemetry readiness, evidence grading, false-positive analysis, tuning, detection promotion, gap recording, and retirement.
 
-| Hunt | Signal | Primary telemetry |
-| --- | --- | --- |
-| [`device-code-follow-on.kql`](hunts/device-code-follow-on.kql) | OAuth device-code authentication requiring contextual investigation | `AADSignInEventsBeta` |
-| [`rare-outbound-beaconing.kql`](hunts/rare-outbound-beaconing.kql) | low-volume periodic outbound behavior | `DeviceNetworkEvents` |
-| [`suspicious-powershell-encoded-command.kql`](hunts/suspicious-powershell-encoded-command.kql) | encoded / obfuscated PowerShell execution | `DeviceProcessEvents` |
+[`CTI normalization`](docs/CTI-NORMALIZATION.md) defines the provenance model used when external intelligence is translated into observations, enrichment, correlation, hunt hypotheses, and confidence judgments.
 
-## CTI normalization
+```text
+INTELLIGENCE / INCIDENT / COVERAGE GAP
+                ↓
+            HYPOTHESIS
+                ↓
+        TELEMETRY READINESS
+                ↓
+             QUERY
+                ↓
+       EVIDENCE + CONTEXT
+                ↓
+      TUNING / CORRELATION
+                ↓
+FINDING / DETECTION / GAP / KNOWLEDGE
+```
 
-[`cti-schema.json`](cti-schema.json) is a compact normalization contract for API-driven enrichment. It separates source/provenance, observable value/type, actor or campaign context, confidence, temporal fields, and ingestion metadata so enrichment does not erase where evidence came from.
+## Repository contract
 
-## Hunt contract
-
-Every hunt should answer these before the first operator runs:
+Every public hunt should answer these before the first operator runs:
 
 1. What falsifiable behavior is being tested?
 2. Which telemetry must exist for the query to mean anything?
@@ -40,41 +48,53 @@ Every hunt should answer these before the first operator runs:
 4. What should an analyst inspect in the returned rows?
 5. Which legitimate behaviors are expected to collide with the signal?
 6. How should the query be tuned without deleting the behavior being hunted?
+7. What conclusion is justified if the query returns nothing?
 
 Each `.kql` file carries a standard header: `Title` · `Description` · `Suspicious Behavior` · `MITRE ATT&CK` · `Pyramid of Pain` · `Kill Chain` · `Relevant CTI`.
 
 CI rejects hunts that drop this context. A query without telemetry assumptions and investigation context is decorative syntax.
 
-## Method
+## CTI normalization
+
+[`cti-schema.json`](cti-schema.json) is the compact machine-readable normalization contract. It separates source/provenance, observable value/type, actor or campaign context, confidence, temporal fields, and ingestion metadata so enrichment does not erase where evidence came from.
+
+Core rule:
 
 ```text
-HYPOTHESIS
-   ↓
-TELEMETRY READINESS
-   ↓
-CHEAP FILTERS / EARLY AGGREGATION
-   ↓
-INVESTIGATION-USEFUL OUTPUT
-   ↓
-FALSE-POSITIVE ANALYSIS
-   ↓
-TUNING / COVERAGE / GAP RECORD
+SOURCE → PROVENANCE → CLAIM → RELEVANCE → OBSERVABLE BEHAVIOR
+      → TELEMETRY → HYPOTHESIS → EVIDENCE → CONFIDENCE
 ```
 
-- State a falsifiable hypothesis.
-- Name the telemetry required before writing the query.
-- Aggregate early and project only investigation-useful fields.
-- Separate observed evidence from inference.
-- Record ATT&CK mapping, expected false positives, and tuning guidance.
-- Treat IOC matches as leads; behavior and context decide priority.
+Repeated reporting is not automatically independent corroboration. Provenance is preserved through enrichment and correlation.
+
+## Public examples
+
+The query files below exist to make the methodology concrete. They are intentionally small, sanitized examples rather than a portfolio ranking or representation of operational hunt volume.
+
+| Example | Signal | Primary telemetry |
+| --- | --- | --- |
+| [`device-code-follow-on.kql`](hunts/device-code-follow-on.kql) | OAuth device-code authentication requiring contextual investigation | `AADSignInEventsBeta` |
+| [`rare-outbound-beaconing.kql`](hunts/rare-outbound-beaconing.kql) | low-volume periodic outbound behavior | `DeviceNetworkEvents` |
+| [`suspicious-powershell-encoded-command.kql`](hunts/suspicious-powershell-encoded-command.kql) | encoded / obfuscated PowerShell execution | `DeviceProcessEvents` |
+
+## Quality gates
+
+- Falsifiable hypothesis before query construction.
+- Telemetry availability, coverage, semantics, retention, latency, and fidelity checked before interpretation.
+- Cheap filters and early aggregation preferred where they preserve investigation value.
+- Observed evidence separated from inference and attribution.
+- Expected false positives and tuning guidance documented.
+- CTI source URLs and provenance preserved.
+- Negative results scoped to the telemetry actually available.
+- Public-safety review before contribution or release.
 
 ## Contribution standard
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). Pull requests use a hunt-focused template that forces telemetry assumptions, analyst value, ATT&CK scope, false-positive analysis, provenance, and a public-safety check into the review path.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Pull requests use a hunt-focused template that forces telemetry assumptions, analyst value, ATT&CK scope, false-positive analysis, provenance, and a public-safety check into the review path. Repository ownership is explicit in [`.github/CODEOWNERS`](.github/CODEOWNERS).
 
 ## Safety boundary
 
-This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, or material that cannot be safely made public. See [`SECURITY.md`](SECURITY.md) for disclosure guidance and scope.
+This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, proprietary rules, or material that cannot be safely made public. See [`SECURITY.md`](SECURITY.md) for disclosure guidance and scope.
 
 ## License
 
