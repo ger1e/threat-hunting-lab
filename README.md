@@ -76,7 +76,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md). Pull requests use a hunt-focused templ
 
 ## Safety boundary
 
-This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, or material that cannot be safely made public.
+This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, or material that cannot be safely made public. See [`SECURITY.md`](SECURITY.md) for disclosure guidance and scope.
 
 ## License
 
