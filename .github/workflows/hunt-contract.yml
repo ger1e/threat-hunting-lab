@@ -1,14 +1,22 @@
-name: hunt-contract
+name: quality-gates
 
 on:
   pull_request:
     paths:
       - 'hunts/**/*.kql'
+      - 'docs/**/*.md'
+      - 'cti-schema.json'
+      - 'README.md'
+      - '.github/CODEOWNERS'
       - '.github/workflows/hunt-contract.yml'
   push:
     branches: [main]
     paths:
       - 'hunts/**/*.kql'
+      - 'docs/**/*.md'
+      - 'cti-schema.json'
+      - 'README.md'
+      - '.github/CODEOWNERS'
       - '.github/workflows/hunt-contract.yml'
   workflow_dispatch:
 
@@ -21,6 +29,40 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
+
+      - name: Validate repository contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python -m json.tool cti-schema.json >/dev/null
+
+          required_docs=(
+            'docs/HUNTING-METHODOLOGY.md'
+            'docs/CTI-NORMALIZATION.md'
+            'CONTRIBUTING.md'
+            'SECURITY.md'
+            '.github/CODEOWNERS'
+          )
+
+          for file in "${required_docs[@]}"; do
+            if [[ ! -s "$file" ]]; then
+              echo "::error file=$file::Required repository contract is missing or empty."
+              exit 1
+            fi
+          done
+
+          grep -Fq 'docs/HUNTING-METHODOLOGY.md' README.md || {
+            echo '::error file=README.md::README must link the hunting methodology.'
+            exit 1
+          }
+
+          grep -Fq 'docs/CTI-NORMALIZATION.md' README.md || {
+            echo '::error file=README.md::README must link the CTI normalization model.'
+            exit 1
+          }
+
+          echo 'Repository contracts: PASS'
 
       - name: Validate KQL hunt contract
         shell: bash
