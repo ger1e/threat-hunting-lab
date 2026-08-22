@@ -16,11 +16,9 @@ LANGUAGE    KQL
 PRIORITY    BEHAVIOR + CONTEXT + EVIDENCE
 ```
 
-<p align="center">
-  <img src="assets/hunt-matrix.svg" alt="Cobalt hunt matrix mapping three public hunts to telemetry and analyst value" width="100%">
-</p>
-
 ## Hunt set
+
+The queries in this repository are public examples of the methodology, not a ranked or representative list of real-world hunting priorities.
 
 | Hunt | Signal | Primary telemetry |
 | --- | --- | --- |
