@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If this repository informs your work, cite the repository and preserve source provenance for any derived intelligence or detection content."
+title: "Threat Hunting Lab"
+type: software
+authors:
+  - family-names: "Illy"
+    given-names: "Gergő"
+repository-code: "https://github.com/ger1e/threat-hunting-lab"
+url: "https://github.com/ger1e/threat-hunting-lab"
+license: MIT
+keywords:
+  - threat hunting
+  - cyber threat intelligence
+  - KQL
+  - Microsoft Defender XDR
+  - Microsoft Sentinel
+  - detection engineering
