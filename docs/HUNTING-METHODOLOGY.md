@@ -1,8 +1,8 @@
-# Evidence-first threat hunting methodology
+### Evidence-first threat hunting methodology
 
 This document defines the public operating model behind the examples in this repository. It is intentionally vendor-practical and telemetry-first: a hunt is not considered useful because a query runs; it is useful when the hypothesis is falsifiable, the required telemetry is understood, the output is investigation-ready, and the result can drive a defensible decision.
 
-## 1. Intake and prioritization
+#### 1. Intake and prioritization
 
 A hunt candidate should begin with a concrete trigger rather than a query idea. Typical triggers include external threat intelligence, observed adversary behavior, incident lessons, ATT&CK technique coverage gaps, vulnerability exploitation, identity abuse patterns, control regressions, new enterprise technology, or repeated analyst pain.
 
@@ -15,7 +15,7 @@ A candidate is stronger when it can answer four questions:
 
 Indicators can seed a hunt, but indicator matching alone is not the hunt objective. The objective is the behavior, access path, capability, or relationship the indicator helps expose.
 
-## 2. Hypothesis contract
+#### 2. Hypothesis contract
 
 Every hunt should be reducible to a falsifiable statement:
 
@@ -32,28 +32,24 @@ A useful hypothesis names:
 
 Avoid hypotheses that are simply product searches, IOC lists, or ATT&CK technique names without an observable behavior model.
 
-## 3. Telemetry readiness gate
+#### 3. Telemetry readiness gate
 
 Do not interpret an empty result set until telemetry readiness has been checked.
 
-| Dimension | Question |
-| --- | --- |
-| Availability | Does the required table/data source exist in the environment? |
-| Coverage | Which users, devices, networks, tenants, platforms, or regions are represented? |
-| Semantics | Do the fields mean what the query assumes they mean? |
-| Retention | Does available history cover the behavior's expected dwell time or campaign window? |
-| Latency | How quickly does the source arrive, and can late ingestion change conclusions? |
-| Fidelity | Is the event sufficiently detailed to distinguish the behavior from benign activity? |
-| Joinability | Are stable identifiers available if cross-source correlation is required? |
-| Control effects | Could filtering, proxying, EDR policy, privacy settings, or logging configuration hide the signal? |
+- **Availability** — does the required table/data source exist in the environment?
+- **Coverage** — which users, devices, networks, tenants, platforms, or regions are represented?
+- **Semantics** — do the fields mean what the query assumes they mean?
+- **Retention** — does available history cover the behavior's expected dwell time or campaign window?
+- **Latency** — how quickly does the source arrive, and can late ingestion change conclusions?
+- **Fidelity** — is the event sufficiently detailed to distinguish the behavior from benign activity?
+- **Joinability** — are stable identifiers available if cross-source correlation is required?
+- **Control effects** — could filtering, proxying, EDR policy, privacy settings, or logging configuration hide the signal?
 
 The minimum defensible statement for a negative hunt is not “nothing happened.” It is “no matching evidence was observed in the telemetry available for the defined scope and period.”
 
-## 4. Query engineering
+#### 4. Query engineering
 
 The query should optimize for analyst value rather than clever syntax.
-
-Preferred characteristics:
 
 - constrain time and population early;
 - filter on high-value behavioral primitives before expensive operations;
@@ -66,11 +62,9 @@ Preferred characteristics:
 
 Performance limits are part of correctness. A theoretically precise hunt that routinely times out or exhausts platform limits is not production-useful.
 
-## 5. Evidence model
+#### 5. Evidence model
 
 Evidence and inference should remain separate throughout the hunt.
-
-A practical evidence ladder:
 
 1. **Lead** — an IOC, anomaly, external report, or weak signal that justifies investigation.
 2. **Observed behavior** — telemetry directly shows a relevant action or sequence.
@@ -80,7 +74,7 @@ A practical evidence ladder:
 
 Do not promote confidence merely because multiple tools repeat the same upstream source. Preserve provenance so duplicated intelligence is not mistaken for independent corroboration.
 
-## 6. False positives and tuning
+#### 6. False positives and tuning
 
 False-positive analysis is part of the first version of a hunt, not cleanup after deployment.
 
@@ -95,7 +89,7 @@ Document:
 
 Tune by removing known benign mechanisms while preserving the adversary behavior. Do not tune by excluding entire populations simply because they generate volume.
 
-## 7. CTI translation
+#### 7. CTI translation
 
 External intelligence should pass through a translation step before becoming a hunt:
 
@@ -106,7 +100,7 @@ SOURCE → PROVENANCE → CLAIM → CLIENT/TECH RELEVANCE → OBSERVABLE BEHAVIO
 
 Capture the original source URL, publication or observation time, actor/campaign claims, infrastructure or malware context, confidence, and any uncertainty. Separate confirmed technology overlap from assumed relevance.
 
-## 8. Hunt outcomes
+#### 8. Hunt outcomes
 
 A hunt can end in several useful states:
 
@@ -120,9 +114,7 @@ A hunt can end in several useful states:
 
 Not every hunt should become a scheduled analytic rule.
 
-## 9. Lifecycle states
-
-Use a simple lifecycle so backlog volume does not masquerade as coverage:
+#### 9. Lifecycle states
 
 `CANDIDATE → READY → ACTIVE → TUNED → PROMOTED / PARKED / RETIRED`
 
@@ -134,7 +126,7 @@ Use a simple lifecycle so backlog volume does not masquerade as coverage:
 - **Parked:** useful idea blocked by telemetry, priority, or environmental constraints.
 - **Retired:** behavior, technology, or intelligence basis is no longer relevant.
 
-## 10. Public-safety boundary
+#### 10. Public-safety boundary
 
 Public examples must never contain customer telemetry, internal hostnames, tenant identifiers, credentials, unpublished incident evidence, private architecture, proprietary rules, or sensitive infrastructure. Real operational work should be abstracted to the behavior, telemetry contract, and methodology required to understand the technique.
 

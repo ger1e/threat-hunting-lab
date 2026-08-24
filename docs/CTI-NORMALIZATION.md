@@ -1,8 +1,8 @@
-# CTI normalization and provenance model
+### CTI normalization and provenance model
 
 The repository's CTI schema is intentionally small, but the handling model is strict: enrichment should add context without erasing provenance, and correlation should not turn repeated reporting into artificial confidence.
 
-## Core principles
+#### Core principles
 
 1. **Preserve source identity.** Keep the originating provider, source URL, and ingestion time with the observation.
 2. **Separate source claims from analyst conclusions.** Actor, campaign, victim, or malware attribution can be reported by a source without becoming independently confirmed fact.
@@ -11,17 +11,11 @@ The repository's CTI schema is intentionally small, but the handling model is st
 5. **Deduplicate evidence carefully.** Multiple feeds repeating the same upstream report are not independent corroboration.
 6. **Confidence needs a basis.** A numeric confidence score is useful only when the reason for the score is understood.
 
-## Minimal record
+#### Minimal record
 
-The public schema in [`../cti-schema.json`](../cti-schema.json) requires:
+The public schema in [`../cti-schema.json`](../cti-schema.json) requires `source`, `ingested_at`, and `confidence`. Optional fields carry source URL, observation times, actor/campaign/victim context, sector/geography, a normalized IOC, and free-form context.
 
-- `source`
-- `ingested_at`
-- `confidence`
-
-Optional fields carry source URL, observation times, actor/campaign/victim context, sector/geography, a normalized IOC, and free-form context.
-
-## Normalization pipeline
+#### Normalization pipeline
 
 ```text
 COLLECT
@@ -43,7 +37,7 @@ ASSESS RELEVANCE + CONFIDENCE
 HUNT / DETECTION / INVESTIGATION OUTPUT
 ```
 
-## Provenance rules
+#### Provenance rules
 
 For every observation, retain enough information to answer:
 
@@ -55,17 +49,15 @@ For every observation, retain enough information to answer:
 - Which enrichment values came from another provider?
 - Are two matching records genuinely independent or derived from the same upstream evidence?
 
-## Observable handling
+#### Observable handling
 
 Normalize the basic type/value pair while preserving richer context separately.
 
-Supported public-schema IOC types are currently:
-
-`ip` · `domain` · `url` · `sha256` · `sha1` · `md5` · `email` · `other`
+<sub>Supported public-schema IOC types: `ip` · `domain` · `url` · `sha256` · `sha1` · `md5` · `email` · `other`</sub>
 
 Normalization should avoid destructive transformations. For example, canonicalizing a domain to lowercase is reasonable; discarding the original URL path, source record, or surrounding campaign context is not.
 
-## Confidence
+#### Confidence
 
 A `0–100` confidence value should reflect evidence quality and context, not provider popularity. Useful considerations include:
 
@@ -79,11 +71,9 @@ A `0–100` confidence value should reflect evidence quality and context, not pr
 
 Confidence should decrease when the provenance chain is unclear or when corroborating sources appear to repeat the same upstream claim.
 
-## Correlation
+#### Correlation
 
 Correlation can use shared infrastructure, certificates, passive DNS, ASN/BGP context, malware configuration, campaign naming, victimology, temporal overlap, or behavioral similarity. A correlation should state which relationship is observed and which relationship is inferred.
-
-Examples:
 
 - **Observed:** two domains resolve to the same IP during overlapping time windows.
 - **Observed:** two samples contain the same C2 hostname.
@@ -92,7 +82,7 @@ Examples:
 
 The distinction matters because operational decisions should be based on the evidence actually available.
 
-## Lifecycle
+#### Lifecycle
 
 Indicators and context age differently. Operational pipelines should support:
 
@@ -103,6 +93,6 @@ Indicators and context age differently. Operational pipelines should support:
 - superseding confidence when stronger evidence appears;
 - preserving historical provenance even after an indicator is no longer actionable.
 
-## Public-safety boundary
+#### Public-safety boundary
 
 The public schema and examples are abstractions. Do not place private customer names, internal identifiers, proprietary intelligence, credentials, unpublished incident details, or sensitive infrastructure into this repository.

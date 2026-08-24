@@ -2,15 +2,16 @@
   <img src="assets/lab-signal.svg" alt="GER1E threat hunting lab — hypothesis to tuned evidence" width="100%">
 </p>
 
-# THREAT HUNTING LAB
+<div align="center">
 
-`GER1E // PUBLIC SIGNAL SET`
+<strong>THREAT HUNTING LAB</strong><br/>
+<sub><code>GER1E // PUBLIC SIGNAL SET</code></sub><br/>
 
-<p>
-  <a href="https://github.com/ger1e/threat-hunting-lab/actions/workflows/hunt-contract.yml"><img src="https://github.com/ger1e/threat-hunting-lab/actions/workflows/hunt-contract.yml/badge.svg" alt="quality-gates"></a>
-</p>
+<a href="https://github.com/ger1e/threat-hunting-lab/actions/workflows/hunt-contract.yml"><img src="https://github.com/ger1e/threat-hunting-lab/actions/workflows/hunt-contract.yml/badge.svg" alt="quality-gates"></a><br/>
 
-[`PROFILE`](https://github.com/ger1e) · [`WEBSITE`](https://gergoilly.hu/) · [`HUNTING METHODOLOGY`](docs/HUNTING-METHODOLOGY.md) · [`CTI NORMALIZATION`](docs/CTI-NORMALIZATION.md)
+<sub>[`PROFILE`](https://github.com/ger1e) · [`WEBSITE`](https://gergoilly.hu/) · [`HUNTING METHODOLOGY`](docs/HUNTING-METHODOLOGY.md) · [`CTI NORMALIZATION`](docs/CTI-NORMALIZATION.md)</sub>
+
+</div>
 
 A sanitized public implementation of how I structure threat hunting, CTI translation, telemetry-readiness checks, evidence handling, and detection-oriented investigation. The repository demonstrates method and engineering discipline; the included KQL files are examples, not a ranked list of real-world hunting priorities.
 
@@ -22,7 +23,7 @@ LANGUAGE    KQL
 PRIORITY    BEHAVIOR + CONTEXT + EVIDENCE
 ```
 
-## Operating model
+#### Operating model
 
 [`Hunting methodology`](docs/HUNTING-METHODOLOGY.md) defines the complete lifecycle from intake and falsifiable hypothesis through telemetry readiness, evidence grading, false-positive analysis, tuning, detection promotion, gap recording, and retirement.
 
@@ -44,7 +45,7 @@ INTELLIGENCE / INCIDENT / COVERAGE GAP
 FINDING / DETECTION / GAP / KNOWLEDGE
 ```
 
-## Repository contract
+#### Repository contract
 
 Every public hunt should answer these before the first operator runs:
 
@@ -56,15 +57,11 @@ Every public hunt should answer these before the first operator runs:
 6. How should the query be tuned without deleting the behavior being hunted?
 7. What conclusion is justified if the query returns nothing?
 
-Each `.kql` file carries a standard header: `Title` · `Description` · `Suspicious Behavior` · `MITRE ATT&CK` · `Pyramid of Pain` · `Kill Chain` · `Relevant CTI`.
+<sub>Each `.kql` file carries: `Title` · `Description` · `Suspicious Behavior` · `MITRE ATT&CK` · `Pyramid of Pain` · `Kill Chain` · `Relevant CTI`. CI rejects hunts that drop this context.</sub>
 
-CI rejects hunts that drop this context. A query without telemetry assumptions and investigation context is decorative syntax.
-
-## CTI normalization
+#### CTI normalization
 
 [`cti-schema.json`](cti-schema.json) is the compact machine-readable normalization contract. It separates source/provenance, observable value/type, actor or campaign context, confidence, temporal fields, and ingestion metadata so enrichment does not erase where evidence came from.
-
-Core rule:
 
 ```text
 SOURCE → PROVENANCE → CLAIM → RELEVANCE → OBSERVABLE BEHAVIOR
@@ -73,17 +70,15 @@ SOURCE → PROVENANCE → CLAIM → RELEVANCE → OBSERVABLE BEHAVIOR
 
 Repeated reporting is not automatically independent corroboration. Provenance is preserved through enrichment and correlation.
 
-## Public examples
+#### Public examples
 
-The query files below exist to make the methodology concrete. They are intentionally small, sanitized examples rather than a portfolio ranking or representation of operational hunt volume.
+The query files below are intentionally small, sanitized examples rather than a portfolio ranking or representation of operational hunt volume.
 
-| Example | Signal | Primary telemetry |
-| --- | --- | --- |
-| [`device-code-follow-on.kql`](hunts/device-code-follow-on.kql) | OAuth device-code authentication requiring contextual investigation | `AADSignInEventsBeta` |
-| [`rare-outbound-beaconing.kql`](hunts/rare-outbound-beaconing.kql) | low-volume periodic outbound behavior | `DeviceNetworkEvents` |
-| [`suspicious-powershell-encoded-command.kql`](hunts/suspicious-powershell-encoded-command.kql) | encoded / obfuscated PowerShell execution | `DeviceProcessEvents` |
+- [`device-code-follow-on.kql`](hunts/device-code-follow-on.kql) — OAuth device-code authentication requiring contextual investigation · `AADSignInEventsBeta`
+- [`rare-outbound-beaconing.kql`](hunts/rare-outbound-beaconing.kql) — low-volume periodic outbound behavior · `DeviceNetworkEvents`
+- [`suspicious-powershell-encoded-command.kql`](hunts/suspicious-powershell-encoded-command.kql) — encoded / obfuscated PowerShell execution · `DeviceProcessEvents`
 
-## Quality gates
+#### Quality gates
 
 - Falsifiable hypothesis before query construction.
 - Telemetry availability, coverage, semantics, retention, latency, and fidelity checked before interpretation.
@@ -94,14 +89,10 @@ The query files below exist to make the methodology concrete. They are intention
 - Negative results scoped to the telemetry actually available.
 - Public-safety review before contribution or release.
 
-## Contribution standard
+#### Contribution · safety · license
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md). Pull requests use a hunt-focused template that forces telemetry assumptions, analyst value, ATT&CK scope, false-positive analysis, provenance, and a public-safety check into the review path. Repository ownership is explicit in [`.github/CODEOWNERS`](.github/CODEOWNERS).
 
-## Safety boundary
-
 This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, proprietary rules, or material that cannot be safely made public. See [`SECURITY.md`](SECURITY.md) for disclosure guidance and scope.
 
-## License
-
-MIT. See [`LICENSE`](LICENSE). The license covers the public example material in this repository; third-party names, trademarks, and linked intelligence sources remain the property of their respective owners.
+<sub>MIT. See [`LICENSE`](LICENSE). The license covers the public example material in this repository; third-party names, trademarks, and linked intelligence sources remain the property of their respective owners.</sub>
