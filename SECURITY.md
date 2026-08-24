@@ -1,4 +1,4 @@
-# Security policy
+### Security policy
 
 This repository contains public, sanitized hunting examples and supporting schemas. It must not contain secrets, credentials, customer data, private infrastructure, unpublished incident evidence, or production identifiers.
 
