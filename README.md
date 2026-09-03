@@ -49,6 +49,10 @@ INTELLIGENCE / INCIDENT / COVERAGE GAP
 FINDING / DETECTION / GAP / KNOWLEDGE
 ```
 
+<p align="center">
+  <img src="assets/investigation-console.svg" alt="Threat hunting investigation console showing telemetry surfaces, hypothesis contract, evidence grading and hunt path" width="100%">
+</p>
+
 <sub><strong>02 // REPOSITORY CONTRACT</strong></sub>
 
 Every public hunt should answer these before the first operator runs:
@@ -98,3 +102,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md). Pull requests use a hunt-focused templ
 This repository is intentionally sanitized. Do not submit customer telemetry, real internal hostnames, tenant identifiers, private infrastructure, credentials, unpublished incident evidence, proprietary rules, or material that cannot be safely made public. See [`SECURITY.md`](SECURITY.md) for disclosure guidance and scope.
 
 <sub>MIT. See [`LICENSE`](LICENSE). The license covers the public example material in this repository; third-party names, trademarks, and linked intelligence sources remain the property of their respective owners.</sub>
+
+<p align="center">
+  <img src="assets/doctrine-terminal.svg" alt="Threat hunting doctrine terminal — telemetry first, provenance preserved, inference explicit" width="100%">
+</p>
