@@ -8,6 +8,7 @@ on:
     paths:
       - 'hunts/**/*.kql'
       - 'docs/**/*.md'
+      - 'assets/**/*.svg'
       - 'cti-schema.json'
       - 'README.md'
       - '.github/CODEOWNERS'
@@ -57,6 +58,35 @@ jobs:
           }
 
           echo 'Repository contracts: PASS'
+
+      - name: Validate portfolio visuals
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_assets=(
+            'assets/lab-signal.svg'
+            'assets/investigation-console.svg'
+            'assets/doctrine-terminal.svg'
+          )
+
+          for asset in "${required_assets[@]}"; do
+            if [[ ! -s "$asset" ]]; then
+              echo "::error file=$asset::Required portfolio visual is missing or empty."
+              exit 1
+            fi
+            python - "$asset" <<'PY'
+          import sys
+          import xml.etree.ElementTree as ET
+          ET.parse(sys.argv[1])
+          PY
+            grep -Fq "$asset" README.md || {
+              echo "::error file=README.md::README must surface $asset."
+              exit 1
+            }
+          done
+
+          echo 'Portfolio visuals: PASS'
 
       - name: Validate KQL hunt contract
         shell: bash
