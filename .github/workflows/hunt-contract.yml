@@ -11,6 +11,7 @@ on:
       - 'assets/**/*.svg'
       - 'cti-schema.json'
       - 'README.md'
+      - 'tests/**/*.py'
       - '.github/CODEOWNERS'
       - '.github/workflows/hunt-contract.yml'
   workflow_dispatch:
@@ -58,6 +59,9 @@ jobs:
           }
 
           echo 'Repository contracts: PASS'
+
+      - name: Run hunt semantic regression tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
 
       - name: Validate portfolio visuals
         shell: bash
