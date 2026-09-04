@@ -1,4 +1,5 @@
 <!-- GER1E-DOC-SCHEMA: v1 -->
+<!-- MOBILE-AWARE: full-width assets; compact section labels -->
 <p align="center">
   <img src="assets/lab-signal.svg?v=20260904-3" alt="GER1E threat hunting lab — hypothesis to tuned evidence" width="100%">
 </p>
