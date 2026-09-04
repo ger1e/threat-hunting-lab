@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-labelledby="t d">
-<title id="t">GER1E threat hunting lab</title><desc id="d">Animated cobalt CRT threat hunting banner with Matrix rain, radar sweep, and pulsing hunt pipeline.</desc>
+<title id="t">GER1E threat hunting lab</title><desc id="d">Animated cobalt CRT threat hunting banner with Matrix rain, visible rotating radar sweep, and pulsing hunt pipeline.</desc>
 <defs>
 <radialGradient id="bg" cx="56%" cy="40%" r="90%"><stop stop-color="#0a2143"/><stop offset=".48" stop-color="#031022"/><stop offset="1" stop-color="#000207"/></radialGradient>
 <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 3.5H4" stroke="#78a9ff" stroke-opacity=".03" stroke-width=".5"/></pattern>
@@ -27,7 +27,19 @@
 </g>
 <rect width="720" height="360" rx="12" fill="#00030a" opacity=".42"/><rect width="720" height="360" rx="12" fill="url(#scan)"/><rect x="6" y="6" width="708" height="348" rx="12" fill="none" stroke="#44d8ff" stroke-opacity=".24"/>
 <g class="m" font-size="10" letter-spacing="1.5" fill="#739bc0"><text x="22" y="29">NODE://GER1E/HUNTLAB</text><text x="698" y="29" text-anchor="end">PUBLIC / SANITIZED</text></g>
-<g transform="translate(593 92)"><circle r="61" fill="#071a34" fill-opacity=".62" stroke="#47ddff" stroke-opacity=".27"/><circle r="41" fill="none" stroke="#47ddff" stroke-opacity=".23"/><circle r="21" fill="none" stroke="#47ddff" stroke-opacity=".19"/><path d="M-61 0H61M0-61V61" stroke="#47ddff" stroke-opacity=".14"/><path d="M0 0H55" stroke="#a6e4ff" stroke-width="1.8" filter="url(#g)"><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="12s" repeatCount="indefinite"/></path><circle cx="38" cy="-20" r="2.8" fill="#a6e4ff" filter="url(#g)"><animate attributeName="opacity" values=".2;1;.2" dur="2.2s" repeatCount="indefinite"/><animate attributeName="r" values="2;4;2" dur="2.2s" repeatCount="indefinite"/></circle></g>
+<g transform="translate(593 92)">
+  <circle r="61" fill="#071a34" fill-opacity=".62" stroke="#47ddff" stroke-opacity=".27"/>
+  <circle r="41" fill="none" stroke="#47ddff" stroke-opacity=".23"/>
+  <circle r="21" fill="none" stroke="#47ddff" stroke-opacity=".19"/>
+  <path d="M-61 0H61M0-61V61" stroke="#47ddff" stroke-opacity=".14"/>
+  <g data-radar-sweep="rotating">
+    <path d="M0 0L55 -13A56.5 56.5 0 0 1 55 13Z" fill="#72ecff" fill-opacity=".10"/>
+    <path d="M0 0H55" stroke="#a6e4ff" stroke-width="2.2" filter="url(#g)"/>
+    <circle cx="55" cy="0" r="3" fill="#d9f3ff" filter="url(#g)"/>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite"/>
+  </g>
+  <circle cx="38" cy="-20" r="2.8" fill="#a6e4ff" filter="url(#g)"><animate attributeName="opacity" values=".2;1;.2" dur="2.2s" repeatCount="indefinite"/><animate attributeName="r" values="2;4;2" dur="2.2s" repeatCount="indefinite"/></circle>
+</g>
 <text x="34" y="105" class="h" font-size="19" fill="#78a9ff">GER1E //</text><text x="34" y="151" class="h" font-size="40" fill="#effeff" filter="url(#g)">THREAT HUNTING</text><text x="34" y="208" class="h" font-size="67" letter-spacing="-1" fill="#defbff">LAB</text><text x="36" y="238" class="m" font-size="12.5" font-weight="700" letter-spacing="1.15" fill="#75e5ff">DEFENDER XDR · SENTINEL · KQL · CTI</text>
 <g transform="translate(36 267)"><g class="h" font-size="9.6" text-anchor="middle" fill="#d9f3ff"><text x="42" y="12">HYPOTHESIS</text><text x="164" y="12">TELEMETRY</text><text x="278" y="12">QUERY</text><text x="390" y="12">EVIDENCE</text><text x="514" y="12">TUNING</text></g><g stroke="#4589ff" stroke-width="1.4" stroke-opacity=".54"><path d="M82 9H121M205 9H245M310 9H352M430 9H473"/></g><g fill="#a6e4ff" filter="url(#g)"><circle cx="121" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" repeatCount="indefinite"/></circle><circle cx="245" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin=".45s" repeatCount="indefinite"/></circle><circle cx="352" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin=".9s" repeatCount="indefinite"/></circle><circle cx="473" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin="1.35s" repeatCount="indefinite"/></circle></g></g>
 <text x="360" y="324" text-anchor="middle" class="m" font-size="10.2" letter-spacing="1.35" fill="#56dfff">TELEMETRY FIRST // PROVENANCE PRESERVED // INFERENCE EXPLICIT</text>
