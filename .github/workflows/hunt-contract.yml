@@ -98,6 +98,23 @@ jobs:
             }
           done
 
+          radar_assets=(
+            'assets/lab-signal.svg'
+            'assets/doctrine-terminal.svg'
+          )
+
+          for asset in "${radar_assets[@]}"; do
+            grep -Fq 'data-radar-sweep="rotating"' "$asset" || {
+              echo "::error file=$asset::Radar sweep marker is missing."
+              exit 1
+            }
+
+            grep -Eq 'animateTransform[^>]+type="rotate"[^>]+from="0"[^>]+to="360"' "$asset" || {
+              echo "::error file=$asset::Radar must use the proven 0-to-360 rotation pattern."
+              exit 1
+            }
+          done
+
           echo 'Portfolio visuals: PASS'
 
       - name: Validate KQL hunt contract
