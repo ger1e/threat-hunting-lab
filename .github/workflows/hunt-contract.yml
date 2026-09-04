@@ -87,13 +87,18 @@ jobs:
               exit 1
             }
 
-            grep -Eq '<animate([[:space:]>])|<animateTransform([[:space:]>])|<animateMotion([[:space:]>])' "$asset" || {
-              echo "::error file=$asset::SVG must contain declarative motion."
+            grep -Fq 'values="25,-120;25,480" dur="18s" repeatCount="indefinite"' "$asset" || {
+              echo "::error file=$asset::Visual must use the GER1E profile rain timing."
               exit 1
             }
 
-            grep -Fq 'repeatCount="indefinite"' "$asset" || {
-              echo "::error file=$asset::SVG animation must loop continuously."
+            grep -Fq 'values="75,-260;75,340" dur="21s" repeatCount="indefinite"' "$asset" || {
+              echo "::error file=$asset::Visual must preserve the GER1E profile rain cadence."
+              exit 1
+            }
+
+            grep -Fq 'class="r2"' "$asset" || {
+              echo "::error file=$asset::Visual must preserve the GER1E secondary rain layer."
               exit 1
             }
           done
@@ -104,15 +109,30 @@ jobs:
           )
 
           for asset in "${radar_assets[@]}"; do
-            grep -Fq 'data-radar-sweep="rotating"' "$asset" || {
-              echo "::error file=$asset::Radar sweep marker is missing."
+            grep -Fq '<circle r="67" fill="#071a34" fill-opacity=".6" stroke="#47ddff" stroke-opacity=".25"/>' "$asset" || {
+              echo "::error file=$asset::Radar outer ring must match the GER1E profile radar."
               exit 1
             }
 
-            grep -Eq 'animateTransform[^>]+type="rotate"[^>]+from="0"[^>]+to="360"' "$asset" || {
-              echo "::error file=$asset::Radar must use the proven 0-to-360 rotation pattern."
+            grep -Fq '<circle r="45" fill="none" stroke="#47ddff" stroke-opacity=".25"/>' "$asset" || {
+              echo "::error file=$asset::Radar middle ring must match the GER1E profile radar."
               exit 1
             }
+
+            grep -Fq '<circle r="23" fill="none" stroke="#47ddff" stroke-opacity=".2"/>' "$asset" || {
+              echo "::error file=$asset::Radar inner ring must match the GER1E profile radar."
+              exit 1
+            }
+
+            grep -Fq '<path d="M0 0H64" stroke="#72ecff" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite"/></path>' "$asset" || {
+              echo "::error file=$asset::Radar arm must be the exact GER1E profile rotating line."
+              exit 1
+            }
+
+            if grep -Fq 'data-radar-sweep=' "$asset" || grep -Fq 'A56.5' "$asset"; then
+              echo "::error file=$asset::Custom radar wedge/dot implementation is forbidden."
+              exit 1
+            fi
           done
 
           echo 'Portfolio visuals: PASS'
