@@ -21,6 +21,16 @@ class PublicHuntSemanticTests(unittest.TestCase):
         self.assertIn("join kind=inner", text)
         self.assertNotIn("| where Attempts > 0", text)
 
+    def test_device_code_follow_on_prefilters_endpoint_rows_before_join(self) -> None:
+        text = read_hunt("device-code-follow-on.kql")
+        process_filter = text.index("| where FileName in~")
+        correlation_join = text.index("| join kind=inner")
+        self.assertLess(
+            process_filter,
+            correlation_join,
+            "Suspicious endpoint filtering must reduce DeviceProcessEvents before the UPN join",
+        )
+
     def test_rare_outbound_hunt_only_claims_repeated_public_connections(self) -> None:
         text = read_hunt("rare-outbound-beaconing.kql")
         title = next(line for line in text.splitlines() if line.startswith("// Title:"))

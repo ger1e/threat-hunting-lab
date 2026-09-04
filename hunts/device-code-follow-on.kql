@@ -19,20 +19,29 @@ let DeviceCodeSignIns =
               SignInCountry=Location,
               Application=AppDisplayName,
               CorrelationId;
-DeviceProcessEvents
-| where Timestamp >= ago(Lookback)
-| where isnotempty(AccountUpn)
-| extend EndpointUpn=tolower(AccountUpn)
+let SuspiciousProcesses =
+    DeviceProcessEvents
+    | where Timestamp >= ago(Lookback)
+    | where isnotempty(AccountUpn)
+    | where FileName in~ (
+        "powershell.exe", "pwsh.exe", "cmd.exe", "rundll32.exe", "regsvr32.exe",
+        "mshta.exe", "wscript.exe", "cscript.exe", "certutil.exe", "bitsadmin.exe"
+      )
+      or ProcessCommandLine has_any (
+        "FromBase64String", "EncodedCommand", "DownloadString", "Invoke-WebRequest",
+        "Invoke-RestMethod", "curl ", "wget "
+      )
+    | extend EndpointUpn=tolower(AccountUpn)
+    | project Timestamp,
+              DeviceName,
+              AccountUpn,
+              EndpointUpn,
+              FileName,
+              ProcessCommandLine,
+              InitiatingProcessFileName;
+SuspiciousProcesses
 | join kind=inner (DeviceCodeSignIns) on $left.EndpointUpn == $right.DeviceCodeUpn
 | where Timestamp between (SignInTime .. SignInTime + FollowOnWindow)
-| where FileName in~ (
-    "powershell.exe", "pwsh.exe", "cmd.exe", "rundll32.exe", "regsvr32.exe",
-    "mshta.exe", "wscript.exe", "cscript.exe", "certutil.exe", "bitsadmin.exe"
-  )
-  or ProcessCommandLine has_any (
-    "FromBase64String", "EncodedCommand", "DownloadString", "Invoke-WebRequest",
-    "Invoke-RestMethod", "curl ", "wget "
-  )
 | project Timestamp,
           SignInTime,
           DeviceName,
