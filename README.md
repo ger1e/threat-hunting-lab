@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/lab-signal.svg?v=20260904-2" alt="GER1E threat hunting lab — hypothesis to tuned evidence" width="100%">
+  <img src="assets/lab-signal.svg?v=20260904-3" alt="GER1E threat hunting lab — hypothesis to tuned evidence" width="100%">
 </p>
 
 <div align="center">
@@ -50,7 +50,7 @@ FINDING / DETECTION / GAP / KNOWLEDGE
 ```
 
 <p align="center">
-  <img src="assets/investigation-console.svg?v=20260904-2" alt="Threat hunting investigation console showing telemetry surfaces, hypothesis contract, evidence grading and hunt path" width="100%">
+  <img src="assets/investigation-console.svg?v=20260904-3" alt="Threat hunting investigation console showing telemetry surfaces, hypothesis contract, evidence grading and hunt path" width="100%">
 </p>
 
 <sub><strong>02 // REPOSITORY CONTRACT</strong></sub>
@@ -104,5 +104,5 @@ This repository is intentionally sanitized. Do not submit customer telemetry, re
 <sub>MIT. See [`LICENSE`](LICENSE). The license covers the public example material in this repository; third-party names, trademarks, and linked intelligence sources remain the property of their respective owners.</sub>
 
 <p align="center">
-  <img src="assets/doctrine-terminal.svg?v=20260904-2" alt="Threat hunting doctrine terminal — telemetry first, provenance preserved, inference explicit" width="100%">
+  <img src="assets/doctrine-terminal.svg?v=20260904-3" alt="Threat hunting doctrine terminal — telemetry first, provenance preserved, inference explicit" width="100%">
 </p>
