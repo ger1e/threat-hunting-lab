@@ -1,77 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-labelledby="t d">
-  <title id="t">GER1E threat hunting lab</title>
-  <desc id="d">Mobile-normalized cobalt CRT threat hunting banner with Matrix rain, radar, hunt pipeline, and evidence-first operating model.</desc>
-  <defs>
-    <radialGradient id="bg" cx="56%" cy="40%" r="90%">
-      <stop stop-color="#0a2143"/>
-      <stop offset=".48" stop-color="#031022"/>
-      <stop offset="1" stop-color="#000207"/>
-    </radialGradient>
-    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
-      <path d="M0 3.5H4" stroke="#78a9ff" stroke-opacity=".03" stroke-width=".5"/>
-    </pattern>
-    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
-      <feGaussianBlur stdDeviation="2.2" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <clipPath id="frame"><rect x="6" y="6" width="708" height="348" rx="12"/></clipPath>
-    <style>
-      .m{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-      .h{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:900;letter-spacing:1.2px}
-      .rain{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;fill:#49dfff;fill-opacity:.34}
-      .rain2{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;fill:#2470ff;fill-opacity:.28}
-    </style>
-    <g id="col"><text text-anchor="middle">0<tspan x="0" dy="17">1</tspan><tspan x="0" dy="17">ヘ</tspan><tspan x="0" dy="17">カ</tspan><tspan x="0" dy="17">尺</tspan><tspan x="0" dy="17">乇</tspan><tspan x="0" dy="17">7</tspan><tspan x="0" dy="17">0</tspan><tspan x="0" dy="17">1</tspan></text></g>
-  </defs>
-
-  <rect width="720" height="360" rx="12" fill="url(#bg)"/>
-  <g clip-path="url(#frame)">
-    <g class="rain">
-      <g transform="translate(28 15)"><use href="#col"/></g><g transform="translate(78 102)"><use href="#col"/></g>
-      <g transform="translate(128 -34)"><use href="#col"/></g><g transform="translate(178 64)"><use href="#col"/></g>
-      <g transform="translate(228 12)"><use href="#col"/></g><g transform="translate(278 118)"><use href="#col"/></g>
-      <g transform="translate(328 -20)"><use href="#col"/></g><g transform="translate(378 82)"><use href="#col"/></g>
-      <g transform="translate(428 27)"><use href="#col"/></g><g transform="translate(478 110)"><use href="#col"/></g>
-      <g transform="translate(528 -12)"><use href="#col"/></g><g transform="translate(578 74)"><use href="#col"/></g>
-      <g transform="translate(628 18)"><use href="#col"/></g><g transform="translate(678 96)"><use href="#col"/></g>
-    </g>
-    <g class="rain2">
-      <g transform="translate(53 176)"><use href="#col"/></g><g transform="translate(153 -78)"><use href="#col"/></g>
-      <g transform="translate(253 192)"><use href="#col"/></g><g transform="translate(353 144)"><use href="#col"/></g>
-      <g transform="translate(453 -58)"><use href="#col"/></g><g transform="translate(553 186)"><use href="#col"/></g>
-      <g transform="translate(653 -42)"><use href="#col"/></g>
-    </g>
-  </g>
-  <rect width="720" height="360" rx="12" fill="#00030a" opacity=".42"/>
-  <rect width="720" height="360" rx="12" fill="url(#scan)"/>
-  <rect x="6" y="6" width="708" height="348" rx="12" fill="none" stroke="#44d8ff" stroke-opacity=".24"/>
-
-  <g class="m" font-size="10" letter-spacing="1.5" fill="#739bc0">
-    <text x="22" y="29">NODE://GER1E/HUNTLAB</text>
-    <text x="698" y="29" text-anchor="end">PUBLIC / SANITIZED</text>
-  </g>
-
-  <g transform="translate(593 92)">
-    <circle r="61" fill="#071a34" fill-opacity=".62" stroke="#47ddff" stroke-opacity=".27"/>
-    <circle r="41" fill="none" stroke="#47ddff" stroke-opacity=".23"/>
-    <circle r="21" fill="none" stroke="#47ddff" stroke-opacity=".19"/>
-    <path d="M-61 0H61M0-61V61" stroke="#47ddff" stroke-opacity=".14"/>
-    <path d="M0 0L53 -28" stroke="#a6e4ff" stroke-width="1.8" filter="url(#glow)"/>
-    <circle cx="38" cy="-20" r="2.8" fill="#a6e4ff" filter="url(#glow)"/>
-  </g>
-
-  <text x="34" y="105" class="h" font-size="19" fill="#78a9ff">GER1E //</text>
-  <text x="34" y="151" class="h" font-size="40" fill="#effeff" filter="url(#glow)">THREAT HUNTING</text>
-  <text x="34" y="208" class="h" font-size="67" letter-spacing="-1" fill="#defbff">LAB</text>
-  <text x="36" y="238" class="m" font-size="12.5" font-weight="700" letter-spacing="1.15" fill="#75e5ff">DEFENDER XDR · SENTINEL · KQL · CTI</text>
-
-  <g transform="translate(36 267)">
-    <g class="h" font-size="9.6" text-anchor="middle" fill="#d9f3ff">
-      <text x="42" y="12">HYPOTHESIS</text><text x="164" y="12">TELEMETRY</text><text x="278" y="12">QUERY</text><text x="390" y="12">EVIDENCE</text><text x="514" y="12">TUNING</text>
-    </g>
-    <g stroke="#4589ff" stroke-width="1.4" stroke-opacity=".54"><path d="M82 9H121M205 9H245M310 9H352M430 9H473"/></g>
-    <g fill="#a6e4ff" filter="url(#glow)"><circle cx="121" cy="9" r="2.4"/><circle cx="245" cy="9" r="2.4"/><circle cx="352" cy="9" r="2.4"/><circle cx="473" cy="9" r="2.4"/></g>
-  </g>
-
-  <text x="360" y="324" text-anchor="middle" class="m" font-size="10.2" letter-spacing="1.35" fill="#56dfff">TELEMETRY FIRST // PROVENANCE PRESERVED // INFERENCE EXPLICIT</text>
+<title id="t">GER1E threat hunting lab</title><desc id="d">Animated cobalt CRT threat hunting banner with Matrix rain, radar sweep, and pulsing hunt pipeline.</desc>
+<defs>
+<radialGradient id="bg" cx="56%" cy="40%" r="90%"><stop stop-color="#0a2143"/><stop offset=".48" stop-color="#031022"/><stop offset="1" stop-color="#000207"/></radialGradient>
+<pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 3.5H4" stroke="#78a9ff" stroke-opacity=".03" stroke-width=".5"/></pattern>
+<filter id="g" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<clipPath id="f"><rect x="6" y="6" width="708" height="348" rx="12"/></clipPath>
+<style>.m{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.h{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:900;letter-spacing:1.2px}.r{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;fill:#49dfff;fill-opacity:.32}</style>
+<g id="c"><text text-anchor="middle">0<tspan x="0" dy="17">1</tspan><tspan x="0" dy="17">ヘ</tspan><tspan x="0" dy="17">カ</tspan><tspan x="0" dy="17">尺</tspan><tspan x="0" dy="17">乇</tspan><tspan x="0" dy="17">7</tspan><tspan x="0" dy="17">0</tspan></text></g>
+</defs>
+<rect width="720" height="360" rx="12" fill="url(#bg)"/>
+<g clip-path="url(#f)" class="r">
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="28,-150;28,430" dur="16s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="78,-250;78,350" dur="21s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="128,-90;128,510" dur="18s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="178,-210;178,390" dur="23s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="228,-120;228,480" dur="17s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="278,-280;278,320" dur="20s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="328,-175;328,425" dur="19s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="378,-70;378,530" dur="24s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="428,-235;428,365" dur="18.5s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="478,-100;478,500" dur="22s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="528,-260;528,340" dur="17.5s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="578,-140;578,460" dur="21.5s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="628,-300;628,300" dur="19.5s" repeatCount="indefinite"/></g>
+<g><use href="#c"/><animateTransform attributeName="transform" type="translate" values="678,-80;678,520" dur="25s" repeatCount="indefinite"/></g>
+</g>
+<rect width="720" height="360" rx="12" fill="#00030a" opacity=".42"/><rect width="720" height="360" rx="12" fill="url(#scan)"/><rect x="6" y="6" width="708" height="348" rx="12" fill="none" stroke="#44d8ff" stroke-opacity=".24"/>
+<g class="m" font-size="10" letter-spacing="1.5" fill="#739bc0"><text x="22" y="29">NODE://GER1E/HUNTLAB</text><text x="698" y="29" text-anchor="end">PUBLIC / SANITIZED</text></g>
+<g transform="translate(593 92)"><circle r="61" fill="#071a34" fill-opacity=".62" stroke="#47ddff" stroke-opacity=".27"/><circle r="41" fill="none" stroke="#47ddff" stroke-opacity=".23"/><circle r="21" fill="none" stroke="#47ddff" stroke-opacity=".19"/><path d="M-61 0H61M0-61V61" stroke="#47ddff" stroke-opacity=".14"/><path d="M0 0H55" stroke="#a6e4ff" stroke-width="1.8" filter="url(#g)"><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="12s" repeatCount="indefinite"/></path><circle cx="38" cy="-20" r="2.8" fill="#a6e4ff" filter="url(#g)"><animate attributeName="opacity" values=".2;1;.2" dur="2.2s" repeatCount="indefinite"/><animate attributeName="r" values="2;4;2" dur="2.2s" repeatCount="indefinite"/></circle></g>
+<text x="34" y="105" class="h" font-size="19" fill="#78a9ff">GER1E //</text><text x="34" y="151" class="h" font-size="40" fill="#effeff" filter="url(#g)">THREAT HUNTING</text><text x="34" y="208" class="h" font-size="67" letter-spacing="-1" fill="#defbff">LAB</text><text x="36" y="238" class="m" font-size="12.5" font-weight="700" letter-spacing="1.15" fill="#75e5ff">DEFENDER XDR · SENTINEL · KQL · CTI</text>
+<g transform="translate(36 267)"><g class="h" font-size="9.6" text-anchor="middle" fill="#d9f3ff"><text x="42" y="12">HYPOTHESIS</text><text x="164" y="12">TELEMETRY</text><text x="278" y="12">QUERY</text><text x="390" y="12">EVIDENCE</text><text x="514" y="12">TUNING</text></g><g stroke="#4589ff" stroke-width="1.4" stroke-opacity=".54"><path d="M82 9H121M205 9H245M310 9H352M430 9H473"/></g><g fill="#a6e4ff" filter="url(#g)"><circle cx="121" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" repeatCount="indefinite"/></circle><circle cx="245" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin=".45s" repeatCount="indefinite"/></circle><circle cx="352" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin=".9s" repeatCount="indefinite"/></circle><circle cx="473" cy="9" r="2.4"><animate attributeName="opacity" values=".25;1;.25" dur="2.4s" begin="1.35s" repeatCount="indefinite"/></circle></g></g>
+<text x="360" y="324" text-anchor="middle" class="m" font-size="10.2" letter-spacing="1.35" fill="#56dfff">TELEMETRY FIRST // PROVENANCE PRESERVED // INFERENCE EXPLICIT</text>
 </svg>
