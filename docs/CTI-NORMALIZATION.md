@@ -1,8 +1,16 @@
-### CTI normalization and provenance model
+<!-- GER1E-DOC-SCHEMA: v1 -->
+<a id="cti-normalization-and-provenance-model"></a>
+<div align="center">
+
+<strong>CTI normalization and provenance model</strong><br/>
+<sub>GER1E // THREAT HUNTING LAB // DOCUMENTATION</sub>
+
+</div>
 
 The repository's CTI schema is intentionally small, but the handling model is strict: enrichment should add context without erasing provenance, and correlation should not turn repeated reporting into artificial confidence.
 
-#### Core principles
+<a id="core-principles"></a>
+<sub><strong>01 // Core principles</strong></sub>
 
 1. **Preserve source identity.** Keep the originating provider, source URL, and ingestion time with the observation.
 2. **Separate source claims from analyst conclusions.** Actor, campaign, victim, or malware attribution can be reported by a source without becoming independently confirmed fact.
@@ -11,11 +19,13 @@ The repository's CTI schema is intentionally small, but the handling model is st
 5. **Deduplicate evidence carefully.** Multiple feeds repeating the same upstream report are not independent corroboration.
 6. **Confidence needs a basis.** A numeric confidence score is useful only when the reason for the score is understood.
 
-#### Minimal record
+<a id="minimal-record"></a>
+<sub><strong>02 // Minimal record</strong></sub>
 
 The public schema in [`../cti-schema.json`](../cti-schema.json) requires `source`, `ingested_at`, and `confidence`. Optional fields carry source URL, observation times, actor/campaign/victim context, sector/geography, a normalized IOC, and free-form context.
 
-#### Normalization pipeline
+<a id="normalization-pipeline"></a>
+<sub><strong>03 // Normalization pipeline</strong></sub>
 
 ```text
 COLLECT
@@ -37,7 +47,8 @@ ASSESS RELEVANCE + CONFIDENCE
 HUNT / DETECTION / INVESTIGATION OUTPUT
 ```
 
-#### Provenance rules
+<a id="provenance-rules"></a>
+<sub><strong>04 // Provenance rules</strong></sub>
 
 For every observation, retain enough information to answer:
 
@@ -49,7 +60,8 @@ For every observation, retain enough information to answer:
 - Which enrichment values came from another provider?
 - Are two matching records genuinely independent or derived from the same upstream evidence?
 
-#### Observable handling
+<a id="observable-handling"></a>
+<sub><strong>05 // Observable handling</strong></sub>
 
 Normalize the basic type/value pair while preserving richer context separately.
 
@@ -57,7 +69,8 @@ Normalize the basic type/value pair while preserving richer context separately.
 
 Normalization should avoid destructive transformations. For example, canonicalizing a domain to lowercase is reasonable; discarding the original URL path, source record, or surrounding campaign context is not.
 
-#### Confidence
+<a id="confidence"></a>
+<sub><strong>06 // Confidence</strong></sub>
 
 A `0–100` confidence value should reflect evidence quality and context, not provider popularity. Useful considerations include:
 
@@ -71,7 +84,8 @@ A `0–100` confidence value should reflect evidence quality and context, not pr
 
 Confidence should decrease when the provenance chain is unclear or when corroborating sources appear to repeat the same upstream claim.
 
-#### Correlation
+<a id="correlation"></a>
+<sub><strong>07 // Correlation</strong></sub>
 
 Correlation can use shared infrastructure, certificates, passive DNS, ASN/BGP context, malware configuration, campaign naming, victimology, temporal overlap, or behavioral similarity. A correlation should state which relationship is observed and which relationship is inferred.
 
@@ -82,7 +96,8 @@ Correlation can use shared infrastructure, certificates, passive DNS, ASN/BGP co
 
 The distinction matters because operational decisions should be based on the evidence actually available.
 
-#### Lifecycle
+<a id="lifecycle"></a>
+<sub><strong>08 // Lifecycle</strong></sub>
 
 Indicators and context age differently. Operational pipelines should support:
 
@@ -93,6 +108,9 @@ Indicators and context age differently. Operational pipelines should support:
 - superseding confidence when stronger evidence appears;
 - preserving historical provenance even after an indicator is no longer actionable.
 
-#### Public-safety boundary
+<a id="public-safety-boundary"></a>
+<sub><strong>09 // Public-safety boundary</strong></sub>
 
 The public schema and examples are abstractions. Do not place private customer names, internal identifiers, proprietary intelligence, credentials, unpublished incident details, or sensitive infrastructure into this repository.
+
+<p align="center"><sub>GER1E // THREAT HUNTING LAB // MOBILE-SAFE DOCUMENTATION</sub></p>

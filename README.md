@@ -1,3 +1,4 @@
+<!-- GER1E-DOC-SCHEMA: v1 -->
 <p align="center">
   <img src="assets/lab-signal.svg?v=20260904-3" alt="GER1E threat hunting lab — hypothesis to tuned evidence" width="100%">
 </p>
@@ -106,3 +107,5 @@ This repository is intentionally sanitized. Do not submit customer telemetry, re
 <p align="center">
   <img src="assets/doctrine-terminal.svg?v=20260904-3" alt="Threat hunting doctrine terminal — telemetry first, provenance preserved, inference explicit" width="100%">
 </p>
+
+<p align="center"><sub>GER1E // THREAT HUNTING LAB // MOBILE-SAFE DOCUMENTATION</sub></p>

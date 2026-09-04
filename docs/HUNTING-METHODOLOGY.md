@@ -1,8 +1,16 @@
-### Evidence-first threat hunting methodology
+<!-- GER1E-DOC-SCHEMA: v1 -->
+<a id="evidence-first-threat-hunting-methodology"></a>
+<div align="center">
+
+<strong>Evidence-first threat hunting methodology</strong><br/>
+<sub>GER1E // THREAT HUNTING LAB // DOCUMENTATION</sub>
+
+</div>
 
 This document defines the public operating model behind the examples in this repository. It is intentionally vendor-practical and telemetry-first: a hunt is not considered useful because a query runs; it is useful when the hypothesis is falsifiable, the required telemetry is understood, the output is investigation-ready, and the result can drive a defensible decision.
 
-#### 1. Intake and prioritization
+<a id="1-intake-and-prioritization"></a>
+<sub><strong>01 // 1. Intake and prioritization</strong></sub>
 
 A hunt candidate should begin with a concrete trigger rather than a query idea. Typical triggers include external threat intelligence, observed adversary behavior, incident lessons, ATT&CK technique coverage gaps, vulnerability exploitation, identity abuse patterns, control regressions, new enterprise technology, or repeated analyst pain.
 
@@ -15,7 +23,8 @@ A candidate is stronger when it can answer four questions:
 
 Indicators can seed a hunt, but indicator matching alone is not the hunt objective. The objective is the behavior, access path, capability, or relationship the indicator helps expose.
 
-#### 2. Hypothesis contract
+<a id="2-hypothesis-contract"></a>
+<sub><strong>02 // 2. Hypothesis contract</strong></sub>
 
 Every hunt should be reducible to a falsifiable statement:
 
@@ -32,7 +41,8 @@ A useful hypothesis names:
 
 Avoid hypotheses that are simply product searches, IOC lists, or ATT&CK technique names without an observable behavior model.
 
-#### 3. Telemetry readiness gate
+<a id="3-telemetry-readiness-gate"></a>
+<sub><strong>03 // 3. Telemetry readiness gate</strong></sub>
 
 Do not interpret an empty result set until telemetry readiness has been checked.
 
@@ -47,7 +57,8 @@ Do not interpret an empty result set until telemetry readiness has been checked.
 
 The minimum defensible statement for a negative hunt is not “nothing happened.” It is “no matching evidence was observed in the telemetry available for the defined scope and period.”
 
-#### 4. Query engineering
+<a id="4-query-engineering"></a>
+<sub><strong>04 // 4. Query engineering</strong></sub>
 
 The query should optimize for analyst value rather than clever syntax.
 
@@ -62,7 +73,8 @@ The query should optimize for analyst value rather than clever syntax.
 
 Performance limits are part of correctness. A theoretically precise hunt that routinely times out or exhausts platform limits is not production-useful.
 
-#### 5. Evidence model
+<a id="5-evidence-model"></a>
+<sub><strong>05 // 5. Evidence model</strong></sub>
 
 Evidence and inference should remain separate throughout the hunt.
 
@@ -74,7 +86,8 @@ Evidence and inference should remain separate throughout the hunt.
 
 Do not promote confidence merely because multiple tools repeat the same upstream source. Preserve provenance so duplicated intelligence is not mistaken for independent corroboration.
 
-#### 6. False positives and tuning
+<a id="6-false-positives-and-tuning"></a>
+<sub><strong>06 // 6. False positives and tuning</strong></sub>
 
 False-positive analysis is part of the first version of a hunt, not cleanup after deployment.
 
@@ -89,7 +102,8 @@ Document:
 
 Tune by removing known benign mechanisms while preserving the adversary behavior. Do not tune by excluding entire populations simply because they generate volume.
 
-#### 7. CTI translation
+<a id="7-cti-translation"></a>
+<sub><strong>07 // 7. CTI translation</strong></sub>
 
 External intelligence should pass through a translation step before becoming a hunt:
 
@@ -100,7 +114,8 @@ SOURCE → PROVENANCE → CLAIM → CLIENT/TECH RELEVANCE → OBSERVABLE BEHAVIO
 
 Capture the original source URL, publication or observation time, actor/campaign claims, infrastructure or malware context, confidence, and any uncertainty. Separate confirmed technology overlap from assumed relevance.
 
-#### 8. Hunt outcomes
+<a id="8-hunt-outcomes"></a>
+<sub><strong>08 // 8. Hunt outcomes</strong></sub>
 
 A hunt can end in several useful states:
 
@@ -114,7 +129,8 @@ A hunt can end in several useful states:
 
 Not every hunt should become a scheduled analytic rule.
 
-#### 9. Lifecycle states
+<a id="9-lifecycle-states"></a>
+<sub><strong>09 // 9. Lifecycle states</strong></sub>
 
 `CANDIDATE → READY → ACTIVE → TUNED → PROMOTED / PARKED / RETIRED`
 
@@ -126,8 +142,11 @@ Not every hunt should become a scheduled analytic rule.
 - **Parked:** useful idea blocked by telemetry, priority, or environmental constraints.
 - **Retired:** behavior, technology, or intelligence basis is no longer relevant.
 
-#### 10. Public-safety boundary
+<a id="10-public-safety-boundary"></a>
+<sub><strong>10 // 10. Public-safety boundary</strong></sub>
 
 Public examples must never contain customer telemetry, internal hostnames, tenant identifiers, credentials, unpublished incident evidence, private architecture, proprietary rules, or sensitive infrastructure. Real operational work should be abstracted to the behavior, telemetry contract, and methodology required to understand the technique.
 
 The goal of this repository is to demonstrate how hunts are reasoned about—not to publish production investigations.
+
+<p align="center"><sub>GER1E // THREAT HUNTING LAB // MOBILE-SAFE DOCUMENTATION</sub></p>
