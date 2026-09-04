@@ -1,14 +1,47 @@
-// Title: Device-code sign-in followed by unusual endpoint activity
-// Description: Surfaces device-code authentication and summarizes successful sign-ins for investigation.
-// Suspicious Behavior: OAuth device-code authentication from unusual IP/location or administrative identities.
-// MITRE ATT&CK: T1528 Steal Application Access Token; T1078 Valid Accounts
+// Title: Successful device-code sign-in followed by suspicious endpoint execution
+// Description: Correlates successful OAuth device-code sign-ins with suspicious process execution by the same Entra UPN within a bounded follow-on window.
+// Suspicious Behavior: Successful device-code authentication followed by script interpreters, LOLBins, download tooling, or encoded PowerShell behavior on an endpoint.
+// MITRE ATT&CK: T1528 Steal Application Access Token; T1078 Valid Accounts; T1059 Command and Scripting Interpreter
 // Pyramid of Pain: TTPs
-// Kill Chain: Initial Access / Credential Access
-// Relevant CTI: https://attack.mitre.org/techniques/T1528/ ; https://attack.mitre.org/techniques/T1078/
+// Kill Chain: Initial Access / Credential Access / Execution
+// Relevant CTI: https://attack.mitre.org/techniques/T1528/ ; https://attack.mitre.org/techniques/T1078/ ; https://attack.mitre.org/techniques/T1059/
 let Lookback = 30d;
-AADSignInEventsBeta
+let FollowOnWindow = 2h;
+let DeviceCodeSignIns =
+    SigninLogs
+    | where TimeGenerated >= ago(Lookback)
+    | where AuthenticationProtocol =~ "deviceCode"
+    | where tostring(ResultType) == "0"
+    | where isnotempty(UserPrincipalName)
+    | project SignInTime=TimeGenerated,
+              DeviceCodeUpn=tolower(UserPrincipalName),
+              SignInIPAddress=IPAddress,
+              SignInCountry=Location,
+              Application=AppDisplayName,
+              CorrelationId;
+DeviceProcessEvents
 | where Timestamp >= ago(Lookback)
-| where AuthenticationProtocol =~ "deviceCode"
-| summarize FirstSeen=min(Timestamp), LastSeen=max(Timestamp), Attempts=count(), IPs=make_set(IPAddress, 10), Apps=make_set(Application, 10), Countries=make_set(Country, 10) by AccountUpn, AccountObjectId
-| where Attempts > 0
-| order by LastSeen desc
+| where isnotempty(AccountUpn)
+| extend EndpointUpn=tolower(AccountUpn)
+| join kind=inner (DeviceCodeSignIns) on $left.EndpointUpn == $right.DeviceCodeUpn
+| where Timestamp between (SignInTime .. SignInTime + FollowOnWindow)
+| where FileName in~ (
+    "powershell.exe", "pwsh.exe", "cmd.exe", "rundll32.exe", "regsvr32.exe",
+    "mshta.exe", "wscript.exe", "cscript.exe", "certutil.exe", "bitsadmin.exe"
+  )
+  or ProcessCommandLine has_any (
+    "FromBase64String", "EncodedCommand", "DownloadString", "Invoke-WebRequest",
+    "Invoke-RestMethod", "curl ", "wget "
+  )
+| project Timestamp,
+          SignInTime,
+          DeviceName,
+          AccountUpn,
+          SignInIPAddress,
+          SignInCountry,
+          Application,
+          FileName,
+          ProcessCommandLine,
+          InitiatingProcessFileName,
+          CorrelationId
+| order by Timestamp desc
