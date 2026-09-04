@@ -75,13 +75,25 @@ jobs:
               echo "::error file=$asset::Required portfolio visual is missing or empty."
               exit 1
             fi
+
             python - "$asset" <<'PY'
           import sys
           import xml.etree.ElementTree as ET
           ET.parse(sys.argv[1])
           PY
+
             grep -Fq "$asset" README.md || {
               echo "::error file=README.md::README must surface $asset."
+              exit 1
+            }
+
+            grep -Eq '<animate([[:space:]>])|<animateTransform([[:space:]>])|<animateMotion([[:space:]>])' "$asset" || {
+              echo "::error file=$asset::SVG must contain declarative motion."
+              exit 1
+            }
+
+            grep -Fq 'repeatCount="indefinite"' "$asset" || {
+              echo "::error file=$asset::SVG animation must loop continuously."
               exit 1
             }
           done
