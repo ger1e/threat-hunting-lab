@@ -12,6 +12,7 @@ on:
       - 'cti-schema.json'
       - 'README.md'
       - 'tests/**/*.py'
+      - 'tools/kql-validate/**'
       - '.github/CODEOWNERS'
       - '.github/workflows/hunt-contract.yml'
   workflow_dispatch:
@@ -25,6 +26,11 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '8.0.424'
 
       - name: Validate repository contracts
         shell: bash
@@ -62,6 +68,9 @@ jobs:
 
       - name: Run hunt semantic regression tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Validate KQL syntax with Microsoft Kusto.Language
+        run: dotnet run --project tools/kql-validate/KqlValidate.csproj -- hunts
 
       - name: Validate portfolio visuals
         shell: bash
