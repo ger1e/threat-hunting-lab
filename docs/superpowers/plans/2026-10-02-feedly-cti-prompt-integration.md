@@ -12,49 +12,50 @@
 
 ## Global Constraints
 
-- Feedly-derived prompts are upstream reasoning modules; `docs/HUNTING-METHODOLOGY.md` and `docs/CTI-NORMALIZATION.md` remain authoritative local doctrine.
-- Defender XDR / Sentinel and KQL are the first-class detection target.
+- `docs/HUNTING-METHODOLOGY.md` and `docs/CTI-NORMALIZATION.md` remain authoritative local doctrine.
+- Defender XDR / Sentinel and KQL remain the first-class detection target.
 - Do not add a runtime LLM dependency, CLI, service, database, or orchestration engine.
 - Do not execute KQL against a tenant or claim generated KQL is tested or production-ready by default.
-- Preserve source identity, upstream Feedly prompt ID, exact upstream URL, and an explicit local-adaptation marker for every adapted module.
-- Unknown evidence, telemetry coverage, ATT&CK mappings, actor/campaign context, and validation results must remain explicitly unknown rather than inferred.
-- Lead, feasibility, hypothesis, detection, and validation stages must remain distinct.
-- Examples must be synthetic or sanitized and must not include customer names, internal hostnames, tenant IDs, credentials, private infrastructure, proprietary detections, or unpublished incident evidence.
-- Use no new third-party Python package solely to parse prompt metadata; the validator supports only the repository's intentionally small front-matter subset.
+- Every adapted module retains Feedly attribution, exact upstream prompt ID, exact upstream URL, and `adaptation: ger1e-threat-hunting-lab`.
+- Unknown evidence, telemetry coverage, ATT&CK mappings, actor/campaign context, and validation results remain explicitly unknown.
+- Lead, feasibility, hypothesis, detection, and validation stages remain distinct.
+- Examples are synthetic or sanitized and contain no customer names, internal hostnames, tenant IDs, credentials, private infrastructure, proprietary detections, or unpublished incident evidence.
+- Add no third-party Python package solely to parse prompt metadata; the validator supports only the repository's deliberately small front-matter subset.
 
 ## Review Focus
 
-1. **Manifest drift:** a path, ID, stage, or `next` target changes in one place but not the other; tests must fail on unresolved paths, duplicate IDs, and unresolved downstream IDs.
-2. **Malformed metadata:** front matter is missing, duplicated, or uses unsupported nesting; the validator must reject it rather than silently partially parse it.
-3. **Stage collapse:** lead or feasibility prompts start generating KQL or pretending telemetry exists; stage-specific tests must pin the lead -> feasibility -> hypothesis separation.
-4. **False validation claims:** detection prompts imply generated KQL is tested, deployed, or production-ready; detection-specific tests must require telemetry/validation language and reject those claims.
-5. **Provenance laundering:** an adapted prompt lacks Feedly attribution, upstream ID, or exact URL; every manifest-backed prompt must fail closed when provenance metadata is incomplete.
+1. **Manifest drift:** missing files, duplicate IDs, mismatched stages, or unresolved `next` targets must fail tests.
+2. **Malformed metadata:** missing delimiters, duplicate keys, or unsupported nesting must be rejected rather than partially parsed.
+3. **Stage collapse:** lead/feasibility prompts must not generate KQL or assume telemetry exists.
+4. **False validation claims:** detection prompts must not imply generated KQL is tested, deployed, validated, or production-ready by default.
+5. **Provenance laundering:** any adapted module missing Feedly attribution, upstream ID, or exact HTTPS URL must fail closed.
 
 ---
 
-### Task 1: Prompt Contract Validator and Empty Registry
+### Task 1: Prompt Contract Validator and Registry Skeleton
 
 **Files:**
 - Create: `tests/test_prompt_contracts.py`
 - Create: `prompts/manifest.json`
 
 **Interfaces:**
-- Consumes: repository root and prompt files registered in `prompts/manifest.json`.
-- Produces: `load_manifest() -> list[dict[str, object]]`, `parse_front_matter(text: str) -> dict[str, object]`, and reusable assertion helpers inside `tests/test_prompt_contracts.py` for later tasks.
+- Consumes: repository root and files registered in `prompts/manifest.json`.
+- Produces: `load_manifest() -> list[dict[str, object]]`, `parse_front_matter(text: str) -> dict[str, object]`, and reusable contract assertions.
+- Manifest entry keys are exactly: `id`, `path`, `stage`, `upstream_id`, `inputs`, `outputs`, `gates`, `next`.
 
-- [ ] **Step 1: Write failing validator unit tests**
+- [ ] **Step 1: Write failing validator tests**
 
-Add tests using in-memory front-matter fixtures for: valid scalar/list/nested-source metadata, missing delimiters, duplicate keys, unsupported nesting, duplicate IDs, and unresolved `next` IDs. Assert malformed contracts raise `ValueError` with a stable reason string.
+Add in-memory fixtures covering valid scalar/list/source metadata, missing delimiters, duplicate keys, unsupported deeper nesting, duplicate manifest IDs, and unresolved `next` IDs. Assert malformed contracts raise `ValueError` with stable reason text.
 
-- [ ] **Step 2: Run the focused tests and confirm failure**
+- [ ] **Step 2: Run the focused tests and verify failure**
 
 Run: `python -m unittest tests.test_prompt_contracts -v`
 
-Expected: FAIL because the parser/helpers and registry do not exist yet.
+Expected: FAIL because parser/helpers and registry are absent.
 
-- [ ] **Step 3: Implement the minimal stdlib-only contract parser and registry loader**
+- [ ] **Step 3: Implement the minimal stdlib-only parser and empty registry**
 
-In `tests/test_prompt_contracts.py`, implement only the YAML subset used by this repository: top-level scalars, top-level lists, and the two-level `source` mapping. Reject duplicate keys, unsupported deeper nesting, and malformed list items. Create `prompts/manifest.json` as `{"prompts": []}`.
+Implement only top-level scalars, top-level lists, and a two-level `source` mapping. Reject everything deeper or ambiguous. Create `prompts/manifest.json` as `{"prompts": []}`.
 
 - [ ] **Step 4: Run the focused tests**
 
@@ -69,7 +70,7 @@ git add tests/test_prompt_contracts.py prompts/manifest.json
 git commit -m "test: add prompt contract validator"
 ```
 
-### Task 2: Intake and Enrichment Prompt Modules
+### Task 2: Intake and Enrichment Modules
 
 **Files:**
 - Create: `prompts/intake/source-assessment.md`
@@ -82,25 +83,24 @@ git commit -m "test: add prompt contract validator"
 - Modify: `tests/test_prompt_contracts.py`
 
 **Interfaces:**
-- Consumes: source material and provenance context.
-- Produces module IDs: `source-assessment`, `threat-data-triage`, `multi-feed-consolidation`, `ioc-extract-enrich`, `attack-mapping`, `diamond-model`.
-- Primary upstream mappings: R2-02, R4-01, R4-02, R3-01, R3-02, R3-03 respectively. `attack-mapping` may cite R1-05 as supplementary source context; `diamond-model` may cite R1-01 as supplementary source context.
+- Produces IDs: `source-assessment`, `threat-data-triage`, `multi-feed-consolidation`, `ioc-extract-enrich`, `attack-mapping`, `diamond-model`.
+- Primary upstream IDs: R2-02, R4-01, R4-02, R3-01, R3-02, R3-03. `attack-mapping` may cite R1-05 and `diamond-model` may cite R1-01 as supplementary source context.
 
-- [ ] **Step 1: Add failing manifest/provenance tests for the six module IDs**
+- [ ] **Step 1: Add failing module/provenance tests**
 
-Assert all six IDs are registered, each path exists, each front matter contract matches the manifest, each Feedly-derived module has `source.provider: Feedly`, an exact `source.upstream_id`, an HTTPS GitHub upstream URL, and `adaptation: ger1e-threat-hunting-lab`.
+Assert all six IDs are registered; paths exist; front matter matches manifest; every module has `source.provider: Feedly`, exact upstream ID, HTTPS GitHub upstream URL, `adaptation: ger1e-threat-hunting-lab`, `consumes`, `produces`, `requires`, `gates`, and `next`.
 
-- [ ] **Step 2: Run the focused tests and confirm failure**
+- [ ] **Step 2: Run tests and verify failure**
 
 Run: `python -m unittest tests.test_prompt_contracts -v`
 
-Expected: FAIL on missing module registrations/files.
+Expected: FAIL on missing modules.
 
-- [ ] **Step 3: Create the six adapted prompt files and manifest entries**
+- [ ] **Step 3: Create the six prompts and manifest entries**
 
-Use the spec-defined responsibilities. Require explicit uncertainty, source citations, evidence/inference separation, and no fabricated ATT&CK/IOC/context values. `threat-data-triage` and `multi-feed-consolidation` must prohibit KQL generation. `ioc-extract-enrich` must stay compatible with `cti-schema.json` and preserve URL paths/context. `attack-mapping` must flag ambiguous mappings. `diamond-model` must separate observed relationships from inference.
+Enforce source citations, explicit uncertainty, evidence/inference separation, and no fabricated ATT&CK/IOC/context values. `threat-data-triage` and `multi-feed-consolidation` prohibit KQL. `ioc-extract-enrich` preserves URL paths/context and remains compatible with `cti-schema.json`. `attack-mapping` marks ambiguous mappings. `diamond-model` separates observed relationships from inference.
 
-- [ ] **Step 4: Run contract and existing repository tests**
+- [ ] **Step 4: Run all Python tests**
 
 Run: `python -m unittest discover -s tests -p 'test_*.py' -v`
 
@@ -113,7 +113,7 @@ git add prompts/intake prompts/enrichment prompts/manifest.json tests/test_promp
 git commit -m "feat: add CTI intake and enrichment prompts"
 ```
 
-### Task 3: Hunting Chain Modules and Stage-Separation Gates
+### Task 3: Hunting Chain and Stage Separation
 
 **Files:**
 - Create: `prompts/hunting/hunt-lead-extraction.md`
@@ -124,26 +124,25 @@ git commit -m "feat: add CTI intake and enrichment prompts"
 - Modify: `tests/test_prompt_contracts.py`
 
 **Interfaces:**
-- Consumes: normalized CTI, prioritized leads, environment/stack facts, and telemetry requirements from earlier modules.
-- Produces module IDs: `hunt-lead-extraction`, `hunt-feasibility`, `hunt-hypothesis`, `hunt-package`.
-- Upstream mappings: R2-07, R2-08, R1-04, R3-07 respectively.
-- Required route: `hunt-lead-extraction -> hunt-feasibility -> hunt-hypothesis`; `hunt-package` packages multiple source-supported hypotheses but does not bypass feasibility.
+- Produces IDs: `hunt-lead-extraction`, `hunt-feasibility`, `hunt-hypothesis`, `hunt-package`.
+- Upstream IDs: R2-07, R2-08, R1-04, R3-07.
+- Required route: `hunt-lead-extraction -> hunt-feasibility -> hunt-hypothesis`. `hunt-package` aggregates source-supported hypotheses only after feasibility.
 
 - [ ] **Step 1: Add failing hunting-chain tests**
 
-Assert all four modules exist, the required `next` transitions resolve, lead prompt text explicitly forbids queries/detection rules/full hypotheses, feasibility marks missing stack coverage as unknown, and hypothesis text contains the repository's falsifiable `If ... then ... X ... Y ... Z` contract plus scope, time horizon, benign collisions, falsifiers, and required telemetry.
+Assert required transitions resolve; lead text explicitly forbids queries, detection rules, and full hypotheses; feasibility marks absent stack coverage as unknown; hypothesis text contains the repository falsifiable contract plus scope, time horizon, benign collisions, falsifiers, and required telemetry; `hunt-package` cannot bypass feasibility.
 
-- [ ] **Step 2: Run focused tests and confirm failure**
+- [ ] **Step 2: Run tests and verify failure**
 
 Run: `python -m unittest tests.test_prompt_contracts -v`
 
-Expected: FAIL on missing hunting modules and transitions.
+Expected: FAIL on missing hunting modules/transitions.
 
-- [ ] **Step 3: Create hunting prompts and update manifest**
+- [ ] **Step 3: Create hunting prompts and manifest entries**
 
-Keep lead, feasibility, hypothesis, and package outputs distinct. `hunt-package` may aggregate validated hypotheses but must reference feasibility outcomes and must not infer unavailable telemetry or claim execution results.
+Keep lead, feasibility, hypothesis, and package outputs distinct. Never infer unavailable telemetry or claim execution results.
 
-- [ ] **Step 4: Run full Python tests**
+- [ ] **Step 4: Run all Python tests**
 
 Run: `python -m unittest discover -s tests -p 'test_*.py' -v`
 
@@ -156,7 +155,7 @@ git add prompts/hunting prompts/manifest.json tests/test_prompt_contracts.py
 git commit -m "feat: add threat hunting prompt chain"
 ```
 
-### Task 4: Sentinel Detection and Validation Modules
+### Task 4: Sentinel Detection and Validation
 
 **Files:**
 - Create: `prompts/detection/sentinel-kql-opportunities.md`
@@ -165,26 +164,25 @@ git commit -m "feat: add threat hunting prompt chain"
 - Modify: `tests/test_prompt_contracts.py`
 
 **Interfaces:**
-- Consumes: feasible source-supported behavior/hypotheses and stated telemetry.
-- Produces module IDs: `sentinel-kql-opportunities`, `validation-handoff`.
-- Upstream mappings: R2-04 and R2-06 respectively.
-- `sentinel-kql-opportunities` produces candidate KQL only; `validation-handoff` produces rationale, telemetry requirements, limitations/evasions, FP/tuning guidance, validation steps, expected telemetry, pass/fail criteria, and readiness status.
+- Produces IDs: `sentinel-kql-opportunities`, `validation-handoff`.
+- Upstream IDs: R2-04, R2-06.
+- `sentinel-kql-opportunities` produces candidate KQL only. `validation-handoff` produces rationale, telemetry requirements, limitations/evasions, FP/tuning guidance, validation steps, expected telemetry, pass/fail criteria, and readiness status.
 
 - [ ] **Step 1: Add failing detection-safety tests**
 
-Assert detection modules mention Defender XDR/Sentinel, exact telemetry requirements, time-bounded joins, schema uncertainty, false positives/tuning, analyst/environment validation, and untested status. Reject phrases that claim generated KQL is `production-ready`, `validated`, `tested`, or `deployed` by default.
+Assert the modules require Defender XDR/Sentinel telemetry, time-bounded joins, schema uncertainty handling, false-positive/tuning guidance, analyst/environment validation, and untested status. Reject default claims containing `production-ready`, `validated`, `tested`, or `deployed` as completed states.
 
-- [ ] **Step 2: Run focused tests and confirm failure**
+- [ ] **Step 2: Run tests and verify failure**
 
 Run: `python -m unittest tests.test_prompt_contracts -v`
 
 Expected: FAIL on missing detection modules.
 
-- [ ] **Step 3: Create detection and validation prompts and update manifest**
+- [ ] **Step 3: Create detection/validation prompts and manifest entries**
 
-Use KQL as the canonical local output. Preserve behavior-first telemetry matching, early filtering/aggregation guidance, time-bounded joins, uncertainty labels for unverified fields/`ActionType` values, and short-lived labeling for IOC-only logic.
+Use KQL as canonical local output. Require behavior-first telemetry mapping, early filtering/aggregation, time-bounded joins, explicit uncertainty for unverified fields/`ActionType` values, and short-lived labeling for IOC-only logic.
 
-- [ ] **Step 4: Run Python tests and the existing Microsoft KQL parser gate**
+- [ ] **Step 4: Run Python tests and existing KQL syntax validation**
 
 Run:
 
@@ -193,7 +191,7 @@ python -m unittest discover -s tests -p 'test_*.py' -v
 dotnet run --project tools/kql-validate/KqlValidate.csproj -- hunts
 ```
 
-Expected: all tests PASS; KQL validator reports no syntax regressions in existing hunts.
+Expected: PASS with no existing KQL regressions.
 
 - [ ] **Step 5: Commit**
 
@@ -214,15 +212,14 @@ git commit -m "feat: add Sentinel detection prompt modules"
 - Modify: `tests/test_prompt_contracts.py`
 
 **Interfaces:**
-- Consumes: evidence, source claims, analyst inference, confidence, limitations, and unresolved intelligence gaps from prior modules.
-- Produces module IDs: `structured-threat-assessment`, `incident-sitrep`, `executive-brief`.
-- Upstream mappings: R2-11, R4-07, R4-08 respectively.
+- Produces IDs: `structured-threat-assessment`, `incident-sitrep`, `executive-brief`.
+- Upstream IDs: R2-11, R4-07, R4-08.
 
 - [ ] **Step 1: Add failing reporting/documentation tests**
 
-Assert the three reporting modules are registered and explicitly separate observed facts, source claims, analyst inference, confidence, limitations, and intelligence gaps. Assert `prompts/README.md` links the Feedly source library and states prompt output is analysis assistance rather than ground truth. Assert `docs/CTI-PROMPT-ORCHESTRATION.md` links both authoritative local doctrine files and contains the three routes required by the spec.
+Assert reporting modules separate observed facts, source claims, analyst inference, confidence, limitations, and intelligence gaps. Assert `prompts/README.md` links the Feedly source library and says prompt output is analysis assistance, not ground truth. Assert `docs/CTI-PROMPT-ORCHESTRATION.md` links both authoritative local doctrine files and includes the three spec-required example routes.
 
-- [ ] **Step 2: Run focused tests and confirm failure**
+- [ ] **Step 2: Run tests and verify failure**
 
 Run: `python -m unittest tests.test_prompt_contracts -v`
 
@@ -230,9 +227,9 @@ Expected: FAIL on missing reporting files/docs.
 
 - [ ] **Step 3: Create reporting modules and documentation**
 
-Document module selection and stage transitions without introducing an execution engine. Include the three exact example routes from the spec and explain that manifest transitions are discovery/documentation contracts, not automatic execution.
+Document transitions as discovery/documentation contracts, not automatic execution. Include the three exact routes from the spec.
 
-- [ ] **Step 4: Run full Python tests**
+- [ ] **Step 4: Run all Python tests**
 
 Run: `python -m unittest discover -s tests -p 'test_*.py' -v`
 
@@ -245,7 +242,7 @@ git add prompts/reporting prompts/README.md docs/CTI-PROMPT-ORCHESTRATION.md pro
 git commit -m "docs: add CTI prompt reporting and orchestration"
 ```
 
-### Task 6: Repository Surface, CI Integration, and Final Acceptance Gate
+### Task 6: Repository Surface, CI Wiring, and Final Acceptance
 
 **Files:**
 - Modify: `README.md`
@@ -253,22 +250,22 @@ git commit -m "docs: add CTI prompt reporting and orchestration"
 - Modify: `tests/test_prompt_contracts.py`
 
 **Interfaces:**
-- Consumes: all 15 prompt modules and the final manifest from Tasks 2-5.
-- Produces: top-level discoverability and CI enforcement on prompt/doc changes.
+- Consumes: all 15 prompt modules and final manifest.
+- Produces: top-level discoverability and CI enforcement for prompt/doc changes.
 
 - [ ] **Step 1: Add final failing acceptance tests**
 
-Assert the manifest contains exactly these 15 unique IDs: `source-assessment`, `threat-data-triage`, `multi-feed-consolidation`, `ioc-extract-enrich`, `attack-mapping`, `diamond-model`, `hunt-lead-extraction`, `hunt-feasibility`, `hunt-hypothesis`, `hunt-package`, `sentinel-kql-opportunities`, `validation-handoff`, `structured-threat-assessment`, `incident-sitrep`, `executive-brief`. Assert no public prompt contains `TODO` or `TBD`, every `next` target resolves, every Feedly-derived prompt has complete provenance, and excluded native-core topics are absent from `prompts/manifest.json`.
+Assert exactly these 15 IDs exist: `source-assessment`, `threat-data-triage`, `multi-feed-consolidation`, `ioc-extract-enrich`, `attack-mapping`, `diamond-model`, `hunt-lead-extraction`, `hunt-feasibility`, `hunt-hypothesis`, `hunt-package`, `sentinel-kql-opportunities`, `validation-handoff`, `structured-threat-assessment`, `incident-sitrep`, `executive-brief`. Also assert: no prompt contains `TODO` or `TBD`; every `next` resolves; every Feedly-derived prompt has complete provenance; excluded native-core topics are absent from the manifest; top-level `README.md` links both `prompts/README.md` and `docs/CTI-PROMPT-ORCHESTRATION.md`; `.github/workflows/hunt-contract.yml` includes path filters for `prompts/**/*.md` and `prompts/manifest.json`.
 
-- [ ] **Step 2: Run focused tests and confirm failure**
+- [ ] **Step 2: Run focused tests and verify failure**
 
 Run: `python -m unittest tests.test_prompt_contracts -v`
 
-Expected: FAIL until README/CI surface and final acceptance assertions are satisfied.
+Expected: FAIL specifically on missing README/CI wiring before Step 3.
 
 - [ ] **Step 3: Update top-level README and quality-gates workflow**
 
-Add a compact `CTI prompt layer` link to `prompts/README.md` and `docs/CTI-PROMPT-ORCHESTRATION.md` without displacing the existing methodology/normalization links. Add `prompts/**/*.md` and `prompts/manifest.json` to push path filters. Ensure the existing `python -m unittest discover -s tests -p 'test_*.py' -v` step remains the single Python test entry point.
+Add compact prompt-layer/orchestration links without displacing methodology/normalization links. Add `prompts/**/*.md` and `prompts/manifest.json` to push path filters. Keep `python -m unittest discover -s tests -p 'test_*.py' -v` as the single Python test entry point.
 
 - [ ] **Step 4: Run complete local verification**
 
@@ -281,13 +278,13 @@ python -m unittest discover -s tests -p 'test_*.py' -v
 dotnet run --project tools/kql-validate/KqlValidate.csproj -- hunts
 ```
 
-Expected: all commands exit 0; all Python tests PASS; existing hunts pass Microsoft KQL syntax validation.
+Expected: all commands exit 0 and all tests pass.
 
-- [ ] **Step 5: Review repository diff for scope and safety**
+- [ ] **Step 5: Review the scoped diff**
 
 Run: `git diff main...HEAD -- README.md .github/workflows/hunt-contract.yml prompts docs/CTI-PROMPT-ORCHESTRATION.md tests/test_prompt_contracts.py`
 
-Expected: only the approved prompt-layer integration, documentation, tests, and CI wiring are present; no runtime service, CLI, tenant data, or excluded Feedly modules appear.
+Expected: only approved prompt-layer files, documentation, tests, and CI wiring; no runtime service, CLI, tenant data, or excluded Feedly modules.
 
 - [ ] **Step 6: Commit**
 
@@ -296,7 +293,7 @@ git add README.md .github/workflows/hunt-contract.yml tests/test_prompt_contract
 git commit -m "ci: enforce CTI prompt contracts"
 ```
 
-- [ ] **Step 7: Final verification from clean branch state**
+- [ ] **Step 7: Verify clean implementation state**
 
 Run: `git status --short`
 
