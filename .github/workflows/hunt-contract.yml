@@ -7,6 +7,8 @@ on:
     branches: [main]
     paths:
       - 'hunts/**/*.kql'
+      - 'prompts/**/*.md'
+      - 'prompts/manifest.json'
       - 'docs/**/*.md'
       - 'assets/**/*.svg'
       - 'cti-schema.json'
@@ -36,34 +38,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           python -m json.tool cti-schema.json >/dev/null
-
+          python -m json.tool prompts/manifest.json >/dev/null
           required_docs=(
             'docs/HUNTING-METHODOLOGY.md'
             'docs/CTI-NORMALIZATION.md'
+            'docs/CTI-PROMPT-ORCHESTRATION.md'
+            'prompts/README.md'
             'CONTRIBUTING.md'
             'SECURITY.md'
             '.github/CODEOWNERS'
           )
-
           for file in "${required_docs[@]}"; do
             if [[ ! -s "$file" ]]; then
               echo "::error file=$file::Required repository contract is missing or empty."
               exit 1
             fi
           done
-
-          grep -Fq 'docs/HUNTING-METHODOLOGY.md' README.md || {
-            echo '::error file=README.md::README must link the hunting methodology.'
-            exit 1
-          }
-
-          grep -Fq 'docs/CTI-NORMALIZATION.md' README.md || {
-            echo '::error file=README.md::README must link the CTI normalization model.'
-            exit 1
-          }
-
+          grep -Fq 'docs/HUNTING-METHODOLOGY.md' README.md || exit 1
+          grep -Fq 'docs/CTI-NORMALIZATION.md' README.md || exit 1
+          grep -Fq 'prompts/README.md' README.md || exit 1
           echo 'Repository contracts: PASS'
 
       - name: Run hunt semantic regression tests
@@ -76,78 +70,27 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
-          required_assets=(
-            'assets/lab-signal.svg'
-            'assets/investigation-console.svg'
-            'assets/doctrine-terminal.svg'
-          )
-
+          required_assets=('assets/lab-signal.svg' 'assets/investigation-console.svg' 'assets/doctrine-terminal.svg')
           for asset in "${required_assets[@]}"; do
-            if [[ ! -s "$asset" ]]; then
-              echo "::error file=$asset::Required portfolio visual is missing or empty."
-              exit 1
-            fi
-
+            [[ -s "$asset" ]] || exit 1
             python - "$asset" <<'PY'
           import sys
           import xml.etree.ElementTree as ET
           ET.parse(sys.argv[1])
           PY
-
-            grep -Fq "$asset" README.md || {
-              echo "::error file=README.md::README must surface $asset."
-              exit 1
-            }
-
-            grep -Fq 'values="25,-120;25,480" dur="18s" repeatCount="indefinite"' "$asset" || {
-              echo "::error file=$asset::Visual must use the GER1E profile rain timing."
-              exit 1
-            }
-
-            grep -Fq 'values="75,-260;75,340" dur="21s" repeatCount="indefinite"' "$asset" || {
-              echo "::error file=$asset::Visual must preserve the GER1E profile rain cadence."
-              exit 1
-            }
-
-            grep -Fq 'class="r2"' "$asset" || {
-              echo "::error file=$asset::Visual must preserve the GER1E secondary rain layer."
-              exit 1
-            }
+            grep -Fq "$asset" README.md || exit 1
+            grep -Fq 'values="25,-120;25,480" dur="18s" repeatCount="indefinite"' "$asset" || exit 1
+            grep -Fq 'values="75,-260;75,340" dur="21s" repeatCount="indefinite"' "$asset" || exit 1
+            grep -Fq 'class="r2"' "$asset" || exit 1
           done
-
-          radar_assets=(
-            'assets/lab-signal.svg'
-            'assets/doctrine-terminal.svg'
-          )
-
+          radar_assets=('assets/lab-signal.svg' 'assets/doctrine-terminal.svg')
           for asset in "${radar_assets[@]}"; do
-            grep -Fq '<circle r="67" fill="#071a34" fill-opacity=".6" stroke="#47ddff" stroke-opacity=".25"/>' "$asset" || {
-              echo "::error file=$asset::Radar outer ring must match the GER1E profile radar."
-              exit 1
-            }
-
-            grep -Fq '<circle r="45" fill="none" stroke="#47ddff" stroke-opacity=".25"/>' "$asset" || {
-              echo "::error file=$asset::Radar middle ring must match the GER1E profile radar."
-              exit 1
-            }
-
-            grep -Fq '<circle r="23" fill="none" stroke="#47ddff" stroke-opacity=".2"/>' "$asset" || {
-              echo "::error file=$asset::Radar inner ring must match the GER1E profile radar."
-              exit 1
-            }
-
-            grep -Fq '<path d="M0 0H64" stroke="#72ecff" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite"/></path>' "$asset" || {
-              echo "::error file=$asset::Radar arm must be the exact GER1E profile rotating line."
-              exit 1
-            }
-
-            if grep -Fq 'data-radar-sweep=' "$asset" || grep -Fq 'A56.5' "$asset"; then
-              echo "::error file=$asset::Custom radar wedge/dot implementation is forbidden."
-              exit 1
-            fi
+            grep -Fq '<circle r="67" fill="#071a34" fill-opacity=".6" stroke="#47ddff" stroke-opacity=".25"/>' "$asset" || exit 1
+            grep -Fq '<circle r="45" fill="none" stroke="#47ddff" stroke-opacity=".25"/>' "$asset" || exit 1
+            grep -Fq '<circle r="23" fill="none" stroke="#47ddff" stroke-opacity=".2"/>' "$asset" || exit 1
+            grep -Fq '<path d="M0 0H64" stroke="#72ecff" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite"/></path>' "$asset" || exit 1
+            if grep -Fq 'data-radar-sweep=' "$asset" || grep -Fq 'A56.5' "$asset"; then exit 1; fi
           done
-
           echo 'Portfolio visuals: PASS'
 
       - name: Validate KQL hunt contract
@@ -155,48 +98,15 @@ jobs:
         run: |
           set -euo pipefail
           shopt -s nullglob globstar
-
           files=(hunts/**/*.kql)
-          if (( ${#files[@]} == 0 )); then
-            echo 'No KQL hunts found.' >&2
-            exit 1
-          fi
-
-          required=(
-            '// Title:'
-            '// Description:'
-            '// Suspicious Behavior:'
-            '// MITRE ATT&CK:'
-            '// Pyramid of Pain:'
-            '// Kill Chain:'
-            '// Relevant CTI:'
-          )
-
+          (( ${#files[@]} > 0 )) || exit 1
+          required=('// Title:' '// Description:' '// Suspicious Behavior:' '// MITRE ATT&CK:' '// Pyramid of Pain:' '// Kill Chain:' '// Relevant CTI:')
           failed=0
           for file in "${files[@]}"; do
-            echo "checking $file"
-
             size=$(wc -c < "$file")
-            if (( size > 65536 )); then
-              echo "::error file=$file::Hunt exceeds 64 KiB ($size bytes)."
-              failed=1
-            fi
-
-            for header in "${required[@]}"; do
-              if ! grep -Fq "$header" "$file"; then
-                echo "::error file=$file::Missing required header: $header"
-                failed=1
-              fi
-            done
-
-            if ! grep -Eq '^// Relevant CTI:.*https://' "$file"; then
-              echo "::error file=$file::Relevant CTI must include at least one HTTPS source."
-              failed=1
-            fi
+            (( size <= 65536 )) || failed=1
+            for header in "${required[@]}"; do grep -Fq "$header" "$file" || failed=1; done
+            grep -Eq '^// Relevant CTI:.*https://' "$file" || failed=1
           done
-
-          if (( failed != 0 )); then
-            exit 1
-          fi
-
+          (( failed == 0 )) || exit 1
           echo "Hunt contract: PASS (${#files[@]} files)"

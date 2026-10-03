@@ -18,6 +18,7 @@
   <a href="https://gergoilly.hu/">SITE</a> ·
   <a href="docs/HUNTING-METHODOLOGY.md">METHODOLOGY</a> ·
   <a href="docs/CTI-NORMALIZATION.md">CTI NORMALIZATION</a> ·
+  <a href="prompts/README.md">CTI PROMPTS</a> ·
   <a href="CONTRIBUTING.md">CONTRIBUTE</a>
 </sub></p>
 
@@ -34,6 +35,8 @@ A sanitized public implementation of how I structure threat hunting, CTI transla
 [`Hunting methodology`](docs/HUNTING-METHODOLOGY.md) defines the complete lifecycle from intake and falsifiable hypothesis through telemetry readiness, evidence grading, false-positive analysis, tuning, detection promotion, gap recording, and retirement.
 
 [`CTI normalization`](docs/CTI-NORMALIZATION.md) defines the provenance model used when external intelligence is translated into observations, enrichment, correlation, hunt hypotheses, and confidence judgments.
+
+[`CTI prompt layer`](prompts/README.md) adds curated Feedly-derived reasoning modules for source assessment, enrichment, hunt-lead feasibility, Sentinel KQL opportunities, validation, and reporting. [`Prompt orchestration`](docs/CTI-PROMPT-ORCHESTRATION.md) documents allowed transitions; it is not an autonomous execution engine.
 
 ```text
 INTELLIGENCE / INCIDENT / COVERAGE GAP
