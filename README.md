@@ -82,9 +82,11 @@ Repeated reporting is not automatically independent corroboration. Provenance is
 
 The query files below are intentionally small, sanitized examples rather than a portfolio ranking or representation of operational hunt volume.
 
-- [`device-code-follow-on.kql`](hunts/device-code-follow-on.kql) — OAuth device-code authentication requiring contextual investigation · `AADSignInEventsBeta`
+- [`device-code-follow-on.kql`](hunts/device-code-follow-on.kql) — correlates successful OAuth device-code sign-ins with suspicious endpoint process activity for the same UPN within two hours · `SigninLogs` + `DeviceProcessEvents`
 - [`rare-outbound-beaconing.kql`](hunts/rare-outbound-beaconing.kql) — low-volume periodic outbound behavior · `DeviceNetworkEvents`
 - [`suspicious-powershell-encoded-command.kql`](hunts/suspicious-powershell-encoded-command.kql) — encoded / obfuscated PowerShell execution · `DeviceProcessEvents`
+
+The device-code example requires both tables in the same query environment. In Microsoft Defender Advanced Hunting, use a connected Microsoft Sentinel workspace with Microsoft Entra sign-in logs and ensure Defender for Endpoint process telemetry is available. [Microsoft Learn](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-microsoft-defender)
 
 <sub><strong>05 // QUALITY GATES</strong></sub>
 
